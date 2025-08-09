@@ -1,6 +1,7 @@
 from app.functions import Datasets
 import matplotlib.pyplot as plt
 
+
 metadata = Datasets("data/movies_metadata.csv")
 metadata_df = metadata.get_dataframe()
 
@@ -9,7 +10,7 @@ ratings_df = ratings.get_dataframe()
 rates = ratings.get_dataframe_col("rating")
 
 plt.hist(rates)
-plt.show()
+plt.savefig('output.png')
 
 
 """# Apply to genres column
