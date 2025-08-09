@@ -6,17 +6,6 @@ df_metadata = pd.read_csv("data/movies_metadata.csv")
 df_rating = pd.read_csv("data/ratings_small.csv")
 
 # Function to safely parse JSON/string-represented lists
-def parse_json_column(col):
-    try:
-        # First try proper JSON parsing
-        return pd.io.json.loads(col)
-    except:
-        try:
-            # If that fails, try literal_eval which handles Python-style strings
-            return ast.literal_eval(col)
-        except:
-            # If all fails, return empty list
-            return []
 
 # Apply to genres column
 df_metadata['genres'] = df_metadata['genres'].apply(parse_json_column)
