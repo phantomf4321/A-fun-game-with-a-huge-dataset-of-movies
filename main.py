@@ -1,12 +1,14 @@
 from app.functions import Datasets
+import matplotlib.pyplot as plt
 
 metadata = Datasets("data/movies_metadata.csv")
 metadata_df = metadata.get_dataframe()
 
 ratings = Datasets("data/ratings_small.csv")
 ratings_df = ratings.get_dataframe()
+ratings_df_rates = ratings.get_dataframe_col("rating")
 
-print(ratings_df.head())
+print(ratings_df_rates)
 
 """# Apply to genres column
 df_metadata['genres'] = df_metadata['genres'].apply(parse_json_column)
