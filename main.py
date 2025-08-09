@@ -3,7 +3,10 @@ from app.functions import Datasets
 metadata = Datasets("data/movies_metadata.csv")
 metadata_df = metadata.get_dataframe()
 
-print(metadata_df.head())
+ratings = Datasets("data/ratings_small.csv")
+ratings_df = ratings.get_dataframe()
+
+print(ratings_df.head())
 
 """# Apply to genres column
 df_metadata['genres'] = df_metadata['genres'].apply(parse_json_column)
