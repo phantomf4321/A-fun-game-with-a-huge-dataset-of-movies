@@ -6,9 +6,11 @@ metadata_df = metadata.get_dataframe()
 
 ratings = Datasets("data/ratings_small.csv")
 ratings_df = ratings.get_dataframe()
-ratings_df_rates = ratings.get_dataframe_col("rating")
+rates = ratings.get_dataframe_col("rating")
 
-print(ratings_df_rates)
+plt.hist(rates)
+plt.show()
+
 
 """# Apply to genres column
 df_metadata['genres'] = df_metadata['genres'].apply(parse_json_column)
