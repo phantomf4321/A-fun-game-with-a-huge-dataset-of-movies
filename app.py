@@ -1,6 +1,5 @@
 import kagglehub
 
 # Download latest version
-path = kagglehub.dataset_download("https://www.kaggle.com/datasets/rounakbanik/the-movies-dataset")
-
+path = kagglehub.dataset_download("rounakbanik/the-movies-dataset")
 print("Path to dataset files:", path)
