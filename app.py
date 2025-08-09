@@ -1,1 +1,1 @@
-print("srtup")
+print("setup")
