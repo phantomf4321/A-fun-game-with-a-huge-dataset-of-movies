@@ -5,6 +5,7 @@ class Datasets:
     def __init__(self, directory):
         self.df = pd.read_csv(directory)
         print("Dataset constructor is called for {}".format(directory))
+        return self.df
 
     def get_dataframe(self):
         return self.df
