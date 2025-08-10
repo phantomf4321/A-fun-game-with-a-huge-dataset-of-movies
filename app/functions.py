@@ -30,5 +30,5 @@ class Plot:
 
     def save_histogram(self, dataframe, title, filename):
         plt.hist(dataframe)
-        filename = filename + ".png"
+        filename = "src/" + filename + ".png"
         plt.savefig(filename)
