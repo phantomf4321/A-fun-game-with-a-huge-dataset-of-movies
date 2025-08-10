@@ -1,4 +1,5 @@
 import pandas as pd
+import matplotlib.pyplot as plt
 import ast
 
 class Datasets:
@@ -22,3 +23,12 @@ class Datasets:
             except:
                 # If all fails, return empty list
                 return []
+
+class Plot:
+    def __init__(self):
+        print("Plot constructor is called!")
+
+    def save_histogram(self, dataframe, title, filename):
+        plt.hist(dataframe)
+        filename = filename + ".png"
+        plt.savefig(filename)
