@@ -9,6 +9,8 @@ ratings = Datasets("data/ratings_small.csv")
 ratings_df = ratings.get_dataframe()
 rates = ratings.get_dataframe_col("rating")
 
+plot.save_histogram(rates, "rate", "Small_rate_histogram")
+
 
 
 """# Apply to genres column
