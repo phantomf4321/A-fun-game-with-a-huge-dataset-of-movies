@@ -8,7 +8,7 @@ from collections import defaultdict
 
 class Datasets:
     def __init__(self, directory):
-        self.df = pd.read_csv(directory)
+        self.df = pd.read_csv(directory, low_memory=False)
         self.log = []
         print("Dataset constructor is called for {}".format(directory))
 
