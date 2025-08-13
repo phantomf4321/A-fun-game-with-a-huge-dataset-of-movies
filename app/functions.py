@@ -9,6 +9,7 @@ from collections import defaultdict
 class Datasets:
     def __init__(self, directory):
         self.df = pd.read_csv(directory)
+        self.log = []
         print("Dataset constructor is called for {}".format(directory))
 
     def get_dataframe(self):
@@ -27,6 +28,13 @@ class Datasets:
             except:
                 # If all fails, return empty list
                 return []
+
+    # --- Step logger to document row counts before/after each step ---
+    def log_step(self, name, **counts):
+        entry = {"step": name}
+        entry.update(counts)
+        self.log.append(entry)
+        print(entry)
 
 class Plot:
     def __init__(self):
