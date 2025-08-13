@@ -29,6 +29,20 @@ class Datasets:
                 # If all fails, return empty list
                 return []
 
+    def tidy_json_list(self, x):
+        """Parse a JSON-like list in movies_metadata (e.g., genres, production_countries)."""
+        if pd.isna(x):
+            return []
+        s = str(x)
+        try:
+            return ast.literal_eval(s)
+        except Exception:
+            # Sometimes the field is already a list-like string but malformed; fallback:
+            try:
+                return json.loads(s)
+            except Exception:
+                return []
+
     # --- Step logger to document row counts before/after each step ---
     def log_step(self, name, **counts):
         entry = {"step": name}
