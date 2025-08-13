@@ -6,10 +6,21 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from collections import defaultdict
 
+class General_Operations:
+    def __init__(self):
+        self.log = []
+        print("General_Operations is called!")
+
+    # --- Step logger to document row counts before/after each step ---
+    def log_step(self, name, **counts):
+        entry = {"step": name}
+        entry.update(counts)
+        self.log.append(entry)
+        print(entry)
+
 class Datasets:
     def __init__(self, directory):
         self.df = pd.read_csv(directory, low_memory=False)
-        self.log = []
         print("Dataset constructor is called for {}".format(directory))
 
     def get_dataframe(self):
@@ -43,12 +54,6 @@ class Datasets:
             except Exception:
                 return []
 
-    # --- Step logger to document row counts before/after each step ---
-    def log_step(self, name, **counts):
-        entry = {"step": name}
-        entry.update(counts)
-        self.log.append(entry)
-        print(entry)
 
     def to_num(self, s, default=np.nan):
         try:

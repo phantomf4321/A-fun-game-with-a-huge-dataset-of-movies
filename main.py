@@ -1,6 +1,7 @@
-from app.functions import Datasets, Plot
+from app.functions import *
 
 plot = Plot()
+GO = General_Operations()
 
 meta = Datasets("data/movies_metadata.csv")
 metadata_df = meta.get_dataframe()
@@ -12,7 +13,7 @@ links = Datasets("data/ratings_small.csv")
 links_df = links.get_dataframe()
 
 # Load with low_memory=False to avoid dtype guessing issues
-meta.log_step("load_raw",
+GO.log_step("load_raw",
          ratings_rows=len(ratings_df),
          links_rows=len(links_df),
          meta_rows=len(metadata_df))
