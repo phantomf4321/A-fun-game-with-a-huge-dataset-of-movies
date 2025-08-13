@@ -50,6 +50,12 @@ class Datasets:
         self.log.append(entry)
         print(entry)
 
+    def to_num(self, s, default=np.nan):
+        try:
+            return pd.to_numeric(s)
+        except Exception:
+            return default
+
 class Plot:
     def __init__(self):
         print("Plot constructor is called!")
