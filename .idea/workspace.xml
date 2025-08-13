@@ -51,6 +51,7 @@
 }</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Plus\PycharmProjects\FinalProject" />
       <recent name="C:\Users\Plus\PycharmProjects\FinalProject\data" />
     </key>
   </component>
@@ -71,7 +72,8 @@
       <updated>1754727283792</updated>
       <workItem from="1754727310991" duration="1406000" />
       <workItem from="1754753519207" duration="4513000" />
-      <workItem from="1754809611827" duration="1147000" />
+      <workItem from="1754809611827" duration="1838000" />
+      <workItem from="1755102599683" duration="366000" />
     </task>
     <task id="LOCAL-00001" summary="setup">
       <option name="closed" value="true" />
@@ -281,7 +283,15 @@
       <option name="project" value="LOCAL" />
       <updated>1754810248303</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="Readme">
+      <option name="closed" value="true" />
+      <created>1754810853026</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1754810853026</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
