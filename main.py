@@ -110,3 +110,4 @@ pivot = sub.pivot_table(index="userId", columns="movieId", values="rating", aggf
 
 # Show as a presence/absence heatmap (binary mask) to emphasize sparsity pattern
 present = (~pivot.isna()).astype(int)
+plot.save_heatmap(present, "user", "movie", TOP_USERS, TOP_MOVIES, "user_movie_heatmap")

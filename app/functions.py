@@ -101,3 +101,15 @@ class Plot:
         filename = "src/" + filename + ".png"
         plt.savefig(filename)
         print("log log histogram of {} is saved in {} successfully!".format(title, filename))
+
+    def save_heatmap(self, dataframe, xlabel, ylabel, topx, topy, filename):
+        plt.figure(figsize=(8, 6))
+        plt.imshow(dataframe.values, aspect="auto", interpolation="nearest")
+        plt.title(f"Sparsity Heatmap (1=rating present) — top {topx} users × top {topy} movies")
+        plt.xlabel(xlabel)
+        plt.ylabel(ylabel)
+        plt.tight_layout()
+        plt.colorbar(label="Present(1) / Missing(0)")
+        filename = "src/" + filename + ".png"
+        plt.savefig(filename)
+        print("log log histogram of {} is saved in {} successfully!".format(title, filename))
