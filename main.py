@@ -20,10 +20,10 @@ GO.log_step("load_raw",
 
 
 # Ensure numeric IDs
-links_df["tmdbId"] = pd.to_numeric(links["tmdbId"], errors="coerce")
-links_df["movieId"] = pd.to_numeric(links["movieId"], errors="coerce")
+links_df["tmdbId"] = pd.to_numeric(links_df["tmdbId"], errors="coerce")
+links_df["movieId"] = pd.to_numeric(links_df["movieId"], errors="coerce")
 
-metadata_df["id"] = pd.to_numeric(meta["id"], errors="coerce")
+metadata_df["id"] = pd.to_numeric(metadata_df["id"], errors="coerce")
 
 # Keep valid rows only
 links_clean = links_df.dropna(subset=["movieId", "tmdbId"]).astype({"movieId": int, "tmdbId": int})
