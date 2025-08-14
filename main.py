@@ -111,3 +111,19 @@ pivot = sub.pivot_table(index="userId", columns="movieId", values="rating", aggf
 # Show as a presence/absence heatmap (binary mask) to emphasize sparsity pattern
 present = (~pivot.isna()).astype(int)
 plot.save_heatmap(present, "user", "movie", TOP_USERS, TOP_MOVIES, "user_movie_heatmap")
+
+# Convert unix seconds to datetime
+r_full["date"] = pd.to_datetime(r_full["timestamp"], unit="s", errors="coerce")
+
+# Ratings per month (volume) and monthly average rating
+monthly = (r_full
+           .set_index("date")
+           .sort_index()
+           .resample("MS")
+           .agg(n_ratings=("rating","count"),
+                avg_rating=("rating","mean"))
+           .dropna(subset=["n_ratings"]))
+print("\nMonthly coverage rows:", len(monthly))
+
+plot.save_simple_plot(monthly, "n_ratings", "Month", "Number of ratings", "Ratings Volume Over Time (Monthly)", "Ratings_Volume_Over_Time(Monthly)")
+plot.save_simple_plot(monthly, "avg_rating", "Month", "Average of ratings", "Ratings Average Over Time (Monthly)", "Ratings_Average_Over_Time(Monthly)")

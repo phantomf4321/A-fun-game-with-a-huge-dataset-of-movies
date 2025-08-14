@@ -73,6 +73,18 @@ class Plot:
     def __init__(self):
         print("Plot constructor is called!")
 
+    def save_simple_plot(self, dataframe, vertex, xlabel, ylabel, title, filename):
+        plt.figure()
+        dataframe[vertex].plot()
+        plt.xlabel(xlabel)
+        plt.ylabel(ylabel)
+        plt.title(title)
+        plt.tight_layout()
+        filename = "src/" + filename + ".png"
+        plt.savefig(filename)
+        print("log log histogram of {} is saved in {} successfully!".format(title, filename))
+
+
     def save_histogram(self, dataframe, vertex, title, filename):
         # Histogram
         plt.figure()
