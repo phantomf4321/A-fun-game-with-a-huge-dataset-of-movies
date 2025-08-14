@@ -9,7 +9,7 @@ metadata_df = meta.get_dataframe()
 ratings = Datasets("data/ratings_small.csv")
 ratings_df = ratings.get_dataframe()
 
-links = Datasets("data/ratings_small.csv")
+links = Datasets("data/links.csv")
 links_df = links.get_dataframe()
 
 # Load with low_memory=False to avoid dtype guessing issues
