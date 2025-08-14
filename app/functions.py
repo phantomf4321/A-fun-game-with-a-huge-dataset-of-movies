@@ -26,6 +26,9 @@ class General_Operations:
         self.log.append(entry)
         print(entry)
 
+    def get_logs(self):
+        return self.log
+
     def to_num(self, s, default=np.nan):
         try:
             return pd.to_numeric(s)

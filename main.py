@@ -172,6 +172,6 @@ plot.save_bar(genre_counts, "# Movies", "Genre", "Top Genres by # Movies", "Top_
 plot.save_bar(genre_counts, "# Movies", "Language", "Top Languages by # Movies", "Top_Languages_by_Movies")
 
 
-audit = pd.DataFrame(log)
+audit = pd.DataFrame(GO.get_logs())
 print("\n=== Row-count audit trail ===")
 print(audit.to_string(index=False))
