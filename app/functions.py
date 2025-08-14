@@ -112,4 +112,4 @@ class Plot:
         plt.colorbar(label="Present(1) / Missing(0)")
         filename = "src/" + filename + ".png"
         plt.savefig(filename)
-        print("log log histogram of {} is saved in {} successfully!".format(title, filename))
+        print("log log histogram of {} is saved in {} successfully!".format("heatmap", filename))
