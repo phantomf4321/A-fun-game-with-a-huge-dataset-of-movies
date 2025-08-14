@@ -26,6 +26,27 @@ class General_Operations:
         self.log.append(entry)
         print(entry)
 
+    def to_num(self, s, default=np.nan):
+        try:
+            return pd.to_numeric(s)
+        except Exception:
+            return default
+
+
+    def tidy_json_list(self, x):
+        """Parse a JSON-like list in movies_metadata (e.g., genres, production_countries)."""
+        if pd.isna(x):
+            return []
+        s = str(x)
+        try:
+            return ast.literal_eval(s)
+        except Exception:
+            # Sometimes the field is already a list-like string but malformed; fallback:
+            try:
+                return json.loads(s)
+            except Exception:
+                return []
+
 class Datasets:
     def __init__(self, directory):
         self.df = pd.read_csv(directory, low_memory=False)
@@ -47,27 +68,6 @@ class Datasets:
             except:
                 # If all fails, return empty list
                 return []
-
-    def tidy_json_list(self, x):
-        """Parse a JSON-like list in movies_metadata (e.g., genres, production_countries)."""
-        if pd.isna(x):
-            return []
-        s = str(x)
-        try:
-            return ast.literal_eval(s)
-        except Exception:
-            # Sometimes the field is already a list-like string but malformed; fallback:
-            try:
-                return json.loads(s)
-            except Exception:
-                return []
-
-
-    def to_num(self, s, default=np.nan):
-        try:
-            return pd.to_numeric(s)
-        except Exception:
-            return default
 
 class Plot:
     def __init__(self):

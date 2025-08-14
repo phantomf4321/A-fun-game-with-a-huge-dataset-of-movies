@@ -127,3 +127,43 @@ print("\nMonthly coverage rows:", len(monthly))
 
 plot.save_simple_plot(monthly, "n_ratings", "Month", "Number of ratings", "Ratings Volume Over Time (Monthly)", "Ratings_Volume_Over_Time(Monthly)")
 plot.save_simple_plot(monthly, "avg_rating", "Month", "Average of ratings", "Ratings Average Over Time (Monthly)", "Ratings_Average_Over_Time(Monthly)")
+
+
+# Parse nested fields
+meta_use = meta_clean[["id","title","original_language","genres","production_countries","spoken_languages"]].copy()
+
+for col in ["genres","production_countries","spoken_languages"]:
+    meta_use[col] = meta_use[col].apply(GO.tidy_json_list)
+
+# Explode genres
+genres_exploded = (meta_use
+                   .explode("genres", ignore_index=True))
+genres_exploded["genre_name"] = genres_exploded["genres"].apply(
+    lambda d: d.get("name") if isinstance(d, dict) else (d if isinstance(d, str) else np.nan)
+)
+genre_counts = (genres_exploded
+                .dropna(subset=["genre_name"])
+                .groupby("genre_name")["id"].nunique()
+                .sort_values(ascending=False))
+
+print("\nTop 15 genres by #movies:\n", genre_counts.head(15))
+
+# Languages (original_language)
+lang_counts = (meta_use
+               .dropna(subset=["original_language"])
+               .groupby("original_language")["id"].nunique()
+               .sort_values(ascending=False))
+
+print("\nTop 15 original languages by #movies:\n", lang_counts.head(15))
+
+# Countries (production_countries)
+countries_exploded = meta_use.explode("production_countries", ignore_index=True)
+countries_exploded["country_name"] = countries_exploded["production_countries"].apply(
+    lambda d: d.get("name") if isinstance(d, dict) else (d if isinstance(d, str) else np.nan)
+)
+country_counts = (countries_exploded
+                  .dropna(subset=["country_name"])
+                  .groupby("country_name")["id"].nunique()
+                  .sort_values(ascending=False))
+
+print("\nTop 15 production countries by #movies:\n", country_counts.head(15))
