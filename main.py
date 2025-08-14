@@ -34,6 +34,22 @@ GO.log_step("clean_ids",
          meta_clean_rows=len(meta_clean))
 
 
+# ratings ⨝ links (movieId)
+r_links = ratings_df.merge(links_clean[["movieId","tmdbId"]], on="movieId", how="inner")
+GO.log_step("ratings_join_links",
+         ratings_before=len(ratings_df),
+         r_links_rows=len(r_links))
+
+# (ratings⨝links) ⨝ metadata (tmdbId == id)
+r_full = r_links.merge(meta_clean[["id","title","original_language","genres","production_countries","release_date"]],
+                       left_on="tmdbId", right_on="id", how="inner")
+
+GO.log_step("join_with_metadata",
+         r_links_before=len(r_links),
+         r_full_rows=len(r_full))
+
+
+
 
 #rates = ratings.get_dataframe_col("rating")
 #plot.save_histogram(rates, "rate", "Small_rate_histogram")
