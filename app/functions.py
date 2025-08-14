@@ -77,3 +77,19 @@ class Plot:
         filename = "src/" + filename + ".png"
         plt.savefig(filename)
         print("histogram of {} is saved in {} successfully!".format(title, filename))
+
+    def save_log_log_histogram(self, dataframe, vertex, xlabel, ylabel, title, filename):
+        # Log-log style histograms (count of counts)
+        plt.figure()
+        u_vals = dataframe[vertex].values
+        u_bins = np.logspace(0, np.log10(max(2, u_vals.max())), 50)
+        plt.hist(u_vals, bins=u_bins)
+        plt.xscale("log");
+        plt.yscale("log")
+        plt.xlabel(xlabel);
+        plt.ylabel(ylabel)
+        plt.title(title)
+        plt.tight_layout()
+        filename = "src/" + filename + ".png"
+        plt.savefig(filename)
+        print("log log histogram of {} is saved in {} successfully!".format(title, filename))
