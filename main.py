@@ -19,6 +19,22 @@ GO.log_step("load_raw",
          meta_rows=len(metadata_df))
 
 
+# Ensure numeric IDs
+links_df["tmdbId"] = pd.to_numeric(links["tmdbId"], errors="coerce")
+links_df["movieId"] = pd.to_numeric(links["movieId"], errors="coerce")
+
+metadata_df["id"] = pd.to_numeric(meta["id"], errors="coerce")
+
+# Keep valid rows only
+links_clean = links_df.dropna(subset=["movieId", "tmdbId"]).astype({"movieId": int, "tmdbId": int})
+meta_clean  = metadata_df.dropna(subset=["id"])
+
+GO.log_step("clean_ids",
+         links_clean_rows=len(links_clean),
+         meta_clean_rows=len(meta_clean))
+
+
+
 #rates = ratings.get_dataframe_col("rating")
 #plot.save_histogram(rates, "rate", "Small_rate_histogram")
 
