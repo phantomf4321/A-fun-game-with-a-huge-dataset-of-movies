@@ -167,3 +167,11 @@ country_counts = (countries_exploded
                   .sort_values(ascending=False))
 
 print("\nTop 15 production countries by #movies:\n", country_counts.head(15))
+
+plot.save_bar(genre_counts, "# Movies", "Genre", "Top Genres by # Movies", "Top_Genres_by_Movies")
+plot.save_bar(genre_counts, "# Movies", "Language", "Top Languages by # Movies", "Top_Languages_by_Movies")
+
+
+audit = pd.DataFrame(log)
+print("\n=== Row-count audit trail ===")
+print(audit.to_string(index=False))
