@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="01e68086-6c5f-4049-b60e-ed4e5458a7cd" name="Changes" comment="EDA Row-count audit trail (nice table)" />
+    <list default="true" id="01e68086-6c5f-4049-b60e-ed4e5458a7cd" name="Changes" comment="EDA Save key outputs for your report" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -72,15 +72,7 @@
       <workItem from="1754753519207" duration="4513000" />
       <workItem from="1754809611827" duration="1838000" />
       <workItem from="1755102599683" duration="1948000" />
-      <workItem from="1755161692532" duration="2819000" />
-    </task>
-    <task id="LOCAL-00006" summary="add dataset test kagglehub">
-      <option name="closed" value="true" />
-      <created>1754728285881</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1754728285881</updated>
+      <workItem from="1755161692532" duration="3277000" />
     </task>
     <task id="LOCAL-00007" summary="reading movies_metadata">
       <option name="closed" value="true" />
@@ -466,14 +458,21 @@
       <option name="project" value="LOCAL" />
       <updated>1755182620839</updated>
     </task>
-    <option name="localTasksCounter" value="55" />
+    <task id="LOCAL-00055" summary="EDA Save key outputs for your report">
+      <option name="closed" value="true" />
+      <created>1755182820461</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1755182820462</updated>
+    </task>
+    <option name="localTasksCounter" value="56" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="add rating_small" />
     <MESSAGE value="ploting test" />
     <MESSAGE value="ploting tes class" />
     <MESSAGE value="Readme" />
@@ -498,10 +497,11 @@
     <MESSAGE value="EDA Coverage across genres, languages, and countries" />
     <MESSAGE value="EDA Coverage across genres, languages, and countries&#10;PLOT BAR" />
     <MESSAGE value="EDA Row-count audit trail (nice table)" />
-    <option name="LAST_COMMIT_MESSAGE" value="EDA Row-count audit trail (nice table)" />
+    <MESSAGE value="EDA Save key outputs for your report" />
+    <option name="LAST_COMMIT_MESSAGE" value="EDA Save key outputs for your report" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/FinalProject$app.coverage" NAME="app Coverage Results" MODIFIED="1754756132096" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/FinalProject$main.coverage" NAME="main Coverage Results" MODIFIED="1755182595708" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/FinalProject$main.coverage" NAME="main Coverage Results" MODIFIED="1755182779887" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
