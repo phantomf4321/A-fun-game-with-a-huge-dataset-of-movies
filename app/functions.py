@@ -65,8 +65,15 @@ class Plot:
     def __init__(self):
         print("Plot constructor is called!")
 
-    def save_histogram(self, dataframe, title, filename):
-        plt.hist(dataframe)
+    def save_histogram(self, dataframe, vertex, title, filename):
+        # Histogram
+        plt.figure()
+        bins = np.arange(0.25, 5.51, 0.5)  # centers for 0.5-step bins
+        plt.hist(dataframe[vertex], bins=bins, edgecolor="black")
+        plt.title(title)
+        plt.xlabel(vertex)
+        plt.ylabel("Count")
+        plt.tight_layout()
         filename = "src/" + filename + ".png"
         plt.savefig(filename)
         print("histogram of {} is saved in {} successfully!".format(title, filename))

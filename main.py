@@ -33,7 +33,7 @@ GO.log_step("clean_ids",
          links_clean_rows=len(links_clean),
          meta_clean_rows=len(meta_clean))
 
-
+# Join ratings → links → metadata (document row counts)
 # ratings ⨝ links (movieId)
 r_links = ratings_df.merge(links_clean[["movieId","tmdbId"]], on="movieId", how="inner")
 GO.log_step("ratings_join_links",
@@ -49,7 +49,28 @@ GO.log_step("join_with_metadata",
          r_full_rows=len(r_full))
 
 
+# Minimal filtering for valid analysis + row counts
+# Convert timestamp and release_date safely
+r_full["timestamp"] = pd.to_numeric(r_full["timestamp"], errors="coerce")
+r_full = r_full.dropna(subset=["timestamp"])
 
+# release_date can be NaT; keep it but parse
+r_full["release_date"] = pd.to_datetime(r_full["release_date"], errors="coerce")
+
+# Keep ratings within common bounds if needed (0.5..5.0); dataset sometimes has 0..5
+r_full = r_full[(r_full["rating"] >= 0.5) & (r_full["rating"] <= 5.0)]
+
+GO.log_step("filter_valid_rows",
+         r_full_rows=len(r_full),
+         unique_users=r_full["userId"].nunique(),
+         unique_movies=r_full["movieId"].nunique())
+
+
+# Summary stats
+rating_desc = r_full["rating"].describe()
+print("\nRating summary:\n", rating_desc)
+
+plot.save_histogram(r_full, "rate", "Rating Distribution", "Small_rate_histogram")
 
 #rates = ratings.get_dataframe_col("rating")
 #plot.save_histogram(rates, "rate", "Small_rate_histogram")
