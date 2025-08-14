@@ -91,10 +91,22 @@ print("Share of all ratings by top 10% users:",
 print("Share of all ratings for top 10% movies:",
       round(GO.cumulative_coverage(movie_cnt, 0.10), 3))
 
+n_users = r_full["userId"].nunique()
+n_movies = r_full["movieId"].nunique()
+nnz = len(r_full)  # number of observed ratings
+sparsity = 1 - nnz / (n_users * n_movies)
+print(f"Sparsity (overall): {sparsity:.6f} (1 − nnz/(U×M))")
 
-"""# Apply to genres column
-df_metadata['genres'] = df_metadata['genres'].apply(parse_json_column)
+# Heatmap of a manageable submatrix:
+# take top-N users & movies by activity to keep the plot readable
+TOP_USERS = 200
+TOP_MOVIES = 200
 
-# Now you can extract genre names
-df_metadata['genre_names'] = df_metadata['genres'].apply(lambda x: [g['name'] for g in x] if isinstance(x, list) else [])
-print(df_metadata['genre_names'].head())"""
+top_users = user_cnt.sort_values("n_ratings", ascending=False).head(TOP_USERS)["userId"]
+top_movies = movie_cnt.sort_values("n_ratings", ascending=False).head(TOP_MOVIES)["movieId"]
+
+sub = r_full[r_full["userId"].isin(top_users) & r_full["movieId"].isin(top_movies)]
+pivot = sub.pivot_table(index="userId", columns="movieId", values="rating", aggfunc="mean")
+
+# Show as a presence/absence heatmap (binary mask) to emphasize sparsity pattern
+present = (~pivot.isna()).astype(int)
