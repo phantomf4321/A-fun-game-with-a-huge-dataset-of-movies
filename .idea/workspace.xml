@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="01e68086-6c5f-4049-b60e-ed4e5458a7cd" name="Changes" comment="EDA all in one">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EDA.py" beforeDir="false" afterPath="$PROJECT_DIR$/EDA.py" afterDir="false" />
+    <list default="true" id="01e68086-6c5f-4049-b60e-ed4e5458a7cd" name="Changes" comment="Baseline Compute movie-level stats from cleaned ratings">
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -76,39 +74,7 @@
       <workItem from="1754753519207" duration="4513000" />
       <workItem from="1754809611827" duration="1838000" />
       <workItem from="1755102599683" duration="1948000" />
-      <workItem from="1755161692532" duration="5748000" />
-    </task>
-    <task id="LOCAL-00008" summary="reading movies_metadata extract geres">
-      <option name="closed" value="true" />
-      <created>1754754775087</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1754754775087</updated>
-    </task>
-    <task id="LOCAL-00009" summary="reading movies_metadata extract geres">
-      <option name="closed" value="true" />
-      <created>1754754838133</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1754754838133</updated>
-    </task>
-    <task id="LOCAL-00010" summary="reading movies_metadata extract geres">
-      <option name="closed" value="true" />
-      <created>1754754991692</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1754754991692</updated>
-    </task>
-    <task id="LOCAL-00011" summary="add rating_small">
-      <option name="closed" value="true" />
-      <created>1754755155781</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1754755155781</updated>
+      <workItem from="1755161692532" duration="6200000" />
     </task>
     <task id="LOCAL-00012" summary="add rating_small">
       <option name="closed" value="true" />
@@ -470,16 +436,45 @@
       <option name="project" value="LOCAL" />
       <updated>1755183244845</updated>
     </task>
-    <option name="localTasksCounter" value="57" />
+    <task id="LOCAL-00057" summary="EDA all in one ExploratoryDataAnalysis">
+      <option name="closed" value="true" />
+      <created>1755185978306</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1755185978306</updated>
+    </task>
+    <task id="LOCAL-00058" summary="EDA all in one ExploratoryDataAnalysis test on main">
+      <option name="closed" value="true" />
+      <created>1755186006533</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1755186006533</updated>
+    </task>
+    <task id="LOCAL-00059" summary="EDA all in one ExploratoryDataAnalysis test on main">
+      <option name="closed" value="true" />
+      <created>1755186155185</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1755186155185</updated>
+    </task>
+    <task id="LOCAL-00060" summary="Baseline Compute movie-level stats from cleaned ratings">
+      <option name="closed" value="true" />
+      <created>1755186279561</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1755186279561</updated>
+    </task>
+    <option name="localTasksCounter" value="61" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="ploting tes class" />
-    <MESSAGE value="Readme" />
-    <MESSAGE value="EDA libs" />
     <MESSAGE value="EDA log_step" />
     <MESSAGE value="EDA tidy_json_list" />
     <MESSAGE value="EDA to_num" />
@@ -502,10 +497,13 @@
     <MESSAGE value="EDA Row-count audit trail (nice table)" />
     <MESSAGE value="EDA Save key outputs for your report" />
     <MESSAGE value="EDA all in one" />
-    <option name="LAST_COMMIT_MESSAGE" value="EDA all in one" />
+    <MESSAGE value="EDA all in one ExploratoryDataAnalysis" />
+    <MESSAGE value="EDA all in one ExploratoryDataAnalysis test on main" />
+    <MESSAGE value="Baseline Compute movie-level stats from cleaned ratings" />
+    <option name="LAST_COMMIT_MESSAGE" value="Baseline Compute movie-level stats from cleaned ratings" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/FinalProject$app.coverage" NAME="app Coverage Results" MODIFIED="1754756132096" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/FinalProject$main.coverage" NAME="main Coverage Results" MODIFIED="1755183238040" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/FinalProject$main.coverage" NAME="main Coverage Results" MODIFIED="1755186361613" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
