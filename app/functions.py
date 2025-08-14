@@ -125,3 +125,15 @@ class Plot:
         filename = "src/" + filename + ".png"
         plt.savefig(filename)
         print("log log histogram of {} is saved in {} successfully!".format("heatmap", filename))
+
+    def save_bar(self, dataframe, xlabel, ylabel, title, filename):
+        # Plots (bars) — genres & languages coverage
+        plt.figure()
+        dataframe.head(15).iloc[::-1].plot(kind="barh")
+        plt.title(title)
+        plt.xlabel(xlabel);
+        plt.ylabel(ylabel)
+        plt.tight_layout()
+        filename = "src/" + filename + ".png"
+        plt.savefig(filename)
+        print("log log histogram of {} is saved in {} successfully!".format("heatmap", filename))
