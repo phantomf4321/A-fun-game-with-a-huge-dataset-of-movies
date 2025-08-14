@@ -53,7 +53,7 @@ for _, row in movie_stats.iterrows():
 per_genre_df = pd.DataFrame(rows, columns=["genre", "tmdbId", "title", "vi", "Ri"])
 
 # For C_g, use all ratings in r_full for that genre
-exploded = r_full.explode("genres_names").rename(columns={"genres_names": "genre"})
+exploded = eda.r_full.explode("genres").rename(columns={"genres": "genre"})
 Cg = exploded.groupby("genre")["rating"].mean()
 
 # Apply WR within each genre
@@ -73,5 +73,5 @@ print("\nPer-genre WR example (Action):")
 print(per_genre_wr[per_genre_wr["genre"] == "Action"][["title", "vi", "Ri", "WR_g"]].head(10))
 
 # --- 4) Save results ---
-global_wr.to_csv("baseline_global_wr.csv", index=False)
-per_genre_wr.to_csv("baseline_per_genre_wr.csv", index=False)
+global_wr.to_csv("data/baseline/baseline_global_wr.csv", index=False)
+per_genre_wr.to_csv("data/baseline/baseline_per_genre_wr.csv", index=False)
