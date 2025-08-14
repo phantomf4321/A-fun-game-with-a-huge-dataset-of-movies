@@ -70,7 +70,7 @@ GO.log_step("filter_valid_rows",
 rating_desc = r_full["rating"].describe()
 print("\nRating summary:\n", rating_desc)
 
-plot.save_histogram(r_full, "rate", "Rating Distribution", "Small_rate_histogram")
+plot.save_histogram(r_full, "rating", "Rating Distribution", "Small_rate_histogram")
 
 #rates = ratings.get_dataframe_col("rating")
 #plot.save_histogram(rates, "rate", "Small_rate_histogram")
