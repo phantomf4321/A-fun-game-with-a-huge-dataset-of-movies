@@ -86,6 +86,10 @@ GO.log_step("long_tail_sizes",
 plot.save_log_log_histogram(user_cnt, "n_ratings", "Ratings per user (log)", "Long Tail: User Activity", "Long Tail: User Activity", "Long_Tail_User_Activity")
 plot.save_log_log_histogram(movie_cnt, "n_ratings", "Ratings per movie (log)", "", "Long Tail: Movie Popularity", "Long_Tail_Movie_Popularity")
 
+print("Share of all ratings by top 10% users:",
+      round(GO.cumulative_coverage(user_cnt, 0.10), 3))
+print("Share of all ratings for top 10% movies:",
+      round(GO.cumulative_coverage(movie_cnt, 0.10), 3))
 
 
 """# Apply to genres column

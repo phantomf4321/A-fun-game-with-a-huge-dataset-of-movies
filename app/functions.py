@@ -11,6 +11,14 @@ class General_Operations:
         self.log = []
         print("General_Operations is called!")
 
+    # cumulative coverage — what fraction of ratings come from top X% users/movies
+    def cumulative_coverage(self, counts, top_frac=0.1, id_col="userId"):
+        c = counts.sort_values("n_ratings", ascending=False).reset_index(drop=True)
+        cutoff = max(1, int(len(c) * top_frac))
+        numer = c.loc[:cutoff - 1, "n_ratings"].sum()
+        denom = c["n_ratings"].sum()
+        return numer / denom
+
     # --- Step logger to document row counts before/after each step ---
     def log_step(self, name, **counts):
         entry = {"step": name}
