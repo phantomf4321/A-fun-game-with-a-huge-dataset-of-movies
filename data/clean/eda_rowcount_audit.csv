@@ -1,0 +1,7 @@
+step,ratings_rows,links_rows,meta_rows,links_clean_rows,meta_clean_rows,ratings_before,r_links_rows,r_links_before,r_full_rows,unique_users,unique_movies,users,movies,median_user_ratings,median_movie_ratings
+load_raw,100004.0,45843.0,45466.0,,,,,,,,,,,,
+clean_ids,,,,45624.0,45463.0,,,,,,,,,,
+ratings_join_links,,,,,,100004.0,99898.0,,,,,,,,
+join_with_metadata,,,,,,,,99898.0,99850.0,,,,,,
+filter_valid_rows,,,,,,,,,99850.0,671.0,9025.0,,,,
+long_tail_sizes,,,,,,,,,,,,671.0,9025.0,71.0,3.0

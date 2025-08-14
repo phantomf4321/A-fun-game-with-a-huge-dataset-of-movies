@@ -175,3 +175,13 @@ plot.save_bar(genre_counts, "# Movies", "Language", "Top Languages by # Movies",
 audit = pd.DataFrame(GO.get_logs())
 print("\n=== Row-count audit trail ===")
 print(audit.to_string(index=False))
+
+
+# Save audit, summaries
+audit.to_csv("data/clean/eda_rowcount_audit.csv", index=False)
+user_cnt.to_csv("data/clean/eda_user_activity_counts.csv", index=False)
+movie_cnt.to_csv("data/clean/eda_movie_popularity_counts.csv", index=False)
+genre_counts.to_csv("data/clean/eda_genre_counts.csv")
+lang_counts.to_csv("data/clean/eda_language_counts.csv")
+country_counts.to_csv("data/clean/eda_country_counts.csv")
+monthly.to_csv("data/clean/eda_temporal_monthly.csv")

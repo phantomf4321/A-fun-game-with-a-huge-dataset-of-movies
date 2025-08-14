@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="01e68086-6c5f-4049-b60e-ed4e5458a7cd" name="Changes" comment="EDA Coverage across genres, languages, and countries">
-      <change beforePath="$PROJECT_DIR$/app/functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/functions.py" afterDir="false" />
-    </list>
+    <list default="true" id="01e68086-6c5f-4049-b60e-ed4e5458a7cd" name="Changes" comment="EDA Row-count audit trail (nice table)" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -74,31 +72,7 @@
       <workItem from="1754753519207" duration="4513000" />
       <workItem from="1754809611827" duration="1838000" />
       <workItem from="1755102599683" duration="1948000" />
-      <workItem from="1755161692532" duration="2494000" />
-    </task>
-    <task id="LOCAL-00003" summary="setup">
-      <option name="closed" value="true" />
-      <created>1754727458410</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1754727458410</updated>
-    </task>
-    <task id="LOCAL-00004" summary="add dataset">
-      <option name="closed" value="true" />
-      <created>1754727515964</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1754727515964</updated>
-    </task>
-    <task id="LOCAL-00005" summary="add dataset test kagglehub">
-      <option name="closed" value="true" />
-      <created>1754728206726</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1754728206726</updated>
+      <workItem from="1755161692532" duration="2819000" />
     </task>
     <task id="LOCAL-00006" summary="add dataset test kagglehub">
       <option name="closed" value="true" />
@@ -468,15 +442,37 @@
       <option name="project" value="LOCAL" />
       <updated>1755182106400</updated>
     </task>
-    <option name="localTasksCounter" value="52" />
+    <task id="LOCAL-00052" summary="EDA Row-count audit trail (nice table)">
+      <option name="closed" value="true" />
+      <created>1755182514426</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1755182514426</updated>
+    </task>
+    <task id="LOCAL-00053" summary="EDA Coverage across genres, languages, and countries&#10;PLOT BAR">
+      <option name="closed" value="true" />
+      <created>1755182523678</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1755182523678</updated>
+    </task>
+    <task id="LOCAL-00054" summary="EDA Row-count audit trail (nice table)">
+      <option name="closed" value="true" />
+      <created>1755182620838</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1755182620839</updated>
+    </task>
+    <option name="localTasksCounter" value="55" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="reading movies_metadata" />
-    <MESSAGE value="reading movies_metadata extract geres" />
     <MESSAGE value="add rating_small" />
     <MESSAGE value="ploting test" />
     <MESSAGE value="ploting tes class" />
@@ -500,10 +496,12 @@
     <MESSAGE value="EDA Temporal dynamics (ratings over time)" />
     <MESSAGE value="EDA Temporal dynamics (ratings over time) PLOT" />
     <MESSAGE value="EDA Coverage across genres, languages, and countries" />
-    <option name="LAST_COMMIT_MESSAGE" value="EDA Coverage across genres, languages, and countries" />
+    <MESSAGE value="EDA Coverage across genres, languages, and countries&#10;PLOT BAR" />
+    <MESSAGE value="EDA Row-count audit trail (nice table)" />
+    <option name="LAST_COMMIT_MESSAGE" value="EDA Row-count audit trail (nice table)" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/FinalProject$app.coverage" NAME="app Coverage Results" MODIFIED="1754756132096" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/FinalProject$main.coverage" NAME="main Coverage Results" MODIFIED="1755182099417" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/FinalProject$main.coverage" NAME="main Coverage Results" MODIFIED="1755182595708" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
