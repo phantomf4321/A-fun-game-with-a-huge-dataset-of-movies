@@ -72,8 +72,17 @@ print("\nRating summary:\n", rating_desc)
 
 plot.save_histogram(r_full, "rating", "Rating Distribution", "Small_rate_histogram")
 
-#rates = ratings.get_dataframe_col("rating")
-#plot.save_histogram(rates, "rate", "Small_rate_histogram")
+
+# User activity (ratings per user)
+user_cnt = r_full.groupby("userId")["movieId"].count().rename("n_ratings").reset_index()
+movie_cnt = r_full.groupby("movieId")["userId"].count().rename("n_ratings").reset_index()
+
+GO.log_step("long_tail_sizes",
+         users=len(user_cnt), movies=len(movie_cnt),
+         median_user_ratings=int(user_cnt["n_ratings"].median()),
+         median_movie_ratings=int(movie_cnt["n_ratings"].median()))
+
+
 
 
 
