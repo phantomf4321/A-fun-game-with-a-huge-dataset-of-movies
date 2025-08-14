@@ -5,10 +5,10 @@ from ExploratoryDataAnalysis import EDA
 
 
 eda = EDA()
-
+r_full = eda.get_r_full()
 # --- 1) Compute movie-level stats from cleaned ratings ---
 movie_stats = (
-    eda.r_full.groupby(["tmdbId", "title"], as_index=False)
+    r_full.groupby(["tmdbId", "title"], as_index=False)
           .agg(
               Ri=("rating", "mean"),   # mean rating
               vi=("rating", "count")   # vote count
@@ -17,7 +17,7 @@ movie_stats = (
 
 # attach genres list (first occurrence)
 movie_stats["genres"] = movie_stats["tmdbId"].map(
-    eda.r_full.drop_duplicates("tmdbId")
+    r_full.drop_duplicates("tmdbId")
           .set_index("tmdbId")["genres"]
 )
 
@@ -53,7 +53,7 @@ for _, row in movie_stats.iterrows():
 per_genre_df = pd.DataFrame(rows, columns=["genre", "tmdbId", "title", "vi", "Ri"])
 
 # For C_g, use all ratings in r_full for that genre
-exploded = eda.r_full.explode("genres").rename(columns={"genres": "genre"})
+exploded = r_full.explode("genres").rename(columns={"genres": "genre"})
 Cg = exploded.groupby("genre")["rating"].mean()
 
 # Apply WR within each genre
