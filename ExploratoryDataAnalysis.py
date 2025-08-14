@@ -116,7 +116,7 @@ class EDA:
         pivot = sub.pivot_table(index="userId", columns="movieId", values="rating", aggfunc="mean")
 
         # Show as a presence/absence heatmap (binary mask) to emphasize sparsity pattern
-        present = (~pivot.isna()).astype(int)
+        self.present = (~pivot.isna()).astype(int)
 
         # Convert unix seconds to datetime
         self.r_full["date"] = pd.to_datetime(self.r_full["timestamp"], unit="s", errors="coerce")
@@ -190,7 +190,7 @@ class EDA:
         print("===== Save plots is running! =====")
         plot.save_histogram(self.r_full, "rating", "Rating Distribution", "Small_rate_histogram")
         plot.save_log_log_histogram(self.user_cnt, "n_ratings", "Ratings per user (log)", "Long Tail: User Activity","Long Tail: User Activity", "Long_Tail_User_Activity")
-        plot.save_log_log_histogram(movie_cnt, "n_ratings", "Ratings per movie (log)", "","Long Tail: Movie Popularity", "Long_Tail_Movie_Popularity")
+        plot.save_log_log_histogram(self.movie_cnt, "n_ratings", "Ratings per movie (log)", "","Long Tail: Movie Popularity", "Long_Tail_Movie_Popularity")
         plot.save_heatmap(self.present, "user", "movie", self.TOP_USERS, self.TOP_MOVIES, "user_movie_heatmap")
         plot.save_simple_plot(self.monthly, "n_ratings", "Month", "Number of ratings", "Ratings Volume Over Time (Monthly)","Ratings_Volume_Over_Time(Monthly)")
         plot.save_simple_plot(self.monthly, "avg_rating", "Month", "Average of ratings","Ratings Average Over Time (Monthly)", "Ratings_Average_Over_Time(Monthly)")
