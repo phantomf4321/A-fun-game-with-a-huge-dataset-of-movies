@@ -83,6 +83,7 @@ GO.log_step("long_tail_sizes",
          median_movie_ratings=int(movie_cnt["n_ratings"].median()))
 
 
+plot.save_log_log_histogram(user_cnt, "n_ratings", "Ratings per user (log)", "Long Tail: User Activity", "Long Tail: User Activity", "Long_Tail_User_Activity")
 
 
 

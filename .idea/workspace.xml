@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="01e68086-6c5f-4049-b60e-ed4e5458a7cd" name="Changes" comment="EDA Join ratings → links → metadata (document row counts)">
-      <change beforePath="$PROJECT_DIR$/app/functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/functions.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-    </list>
+    <list default="true" id="01e68086-6c5f-4049-b60e-ed4e5458a7cd" name="Changes" comment="EDA Long-tail of users and movies save_log_log_histogram" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -75,7 +72,7 @@
       <workItem from="1754753519207" duration="4513000" />
       <workItem from="1754809611827" duration="1838000" />
       <workItem from="1755102599683" duration="1948000" />
-      <workItem from="1755161692532" duration="1114000" />
+      <workItem from="1755161692532" duration="1542000" />
     </task>
     <task id="LOCAL-00001" summary="setup">
       <option name="closed" value="true" />
@@ -381,7 +378,39 @@
       <option name="project" value="LOCAL" />
       <updated>1755162483867</updated>
     </task>
-    <option name="localTasksCounter" value="39" />
+    <task id="LOCAL-00039" summary="EDA Minimal filtering for valid analysis + row counts">
+      <option name="closed" value="true" />
+      <created>1755162842881</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1755162842881</updated>
+    </task>
+    <task id="LOCAL-00040" summary="EDA Plot histogram">
+      <option name="closed" value="true" />
+      <created>1755162889818</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1755162889818</updated>
+    </task>
+    <task id="LOCAL-00041" summary="EDA Long-tail of users and movies">
+      <option name="closed" value="true" />
+      <created>1755162967575</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1755162967575</updated>
+    </task>
+    <task id="LOCAL-00042" summary="EDA Long-tail of users and movies save_log_log_histogram">
+      <option name="closed" value="true" />
+      <created>1755163240467</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1755163240467</updated>
+    </task>
+    <option name="localTasksCounter" value="43" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -406,21 +435,14 @@
     <MESSAGE value="EDA log_step on GO" />
     <MESSAGE value="EDA Ensure numeric IDs" />
     <MESSAGE value="EDA Join ratings → links → metadata (document row counts)" />
-    <option name="LAST_COMMIT_MESSAGE" value="EDA Join ratings → links → metadata (document row counts)" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/main.py</url>
-          <line>74</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+    <MESSAGE value="EDA Minimal filtering for valid analysis + row counts" />
+    <MESSAGE value="EDA Plot histogram" />
+    <MESSAGE value="EDA Long-tail of users and movies" />
+    <MESSAGE value="EDA Long-tail of users and movies save_log_log_histogram" />
+    <option name="LAST_COMMIT_MESSAGE" value="EDA Long-tail of users and movies save_log_log_histogram" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/FinalProject$app.coverage" NAME="app Coverage Results" MODIFIED="1754756132096" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/FinalProject$main.coverage" NAME="main Coverage Results" MODIFIED="1755162631419" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/FinalProject$main.coverage" NAME="main Coverage Results" MODIFIED="1755162966137" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
