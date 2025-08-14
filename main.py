@@ -84,6 +84,7 @@ GO.log_step("long_tail_sizes",
 
 
 plot.save_log_log_histogram(user_cnt, "n_ratings", "Ratings per user (log)", "Long Tail: User Activity", "Long Tail: User Activity", "Long_Tail_User_Activity")
+plot.save_log_log_histogram(movie_cnt, "n_ratings", "Ratings per movie (log)", "", "Long Tail: Movie Popularity", "Long_Tail_Movie_Popularity")
 
 
 
