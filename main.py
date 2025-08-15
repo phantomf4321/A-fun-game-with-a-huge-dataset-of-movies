@@ -189,29 +189,27 @@ def recommend_content(user_id, ratings_df, item_vecs, top_n=10):
 # =============================
 # 5) Natural-language explanations
 # =============================
-def explain_recommendation(tmdb_id, user_id, ratings_df, meta_df):
-    # Ensure unique movie rows
-    meta_unique = meta_df.drop_duplicates(subset="id")
+def explain_recommendation(tmdb_id, user_id, ratings_df):
+    rec_genres = set(GENRES_BY_ID.get(int(tmdb_id), []))
+    rec_cast   = set(CAST_BY_ID.get(int(tmdb_id), []))
 
-    # Genres for the recommended movie
-    rec_row = meta_unique[meta_unique["id"] == tmdb_id]
-    rec_genres = rec_row["genres"].iloc[0] if not rec_row.empty else []
+    # Use user's positively rated items for explanation context
+    liked = ratings_df.loc[(ratings_df["userId"] == user_id) & (ratings_df["rating"] >= 4.0), "tmdbId"].astype(int)
+    liked_genres, liked_cast = set(), set()
+    for mid in liked:
+        liked_genres |= set(GENRES_BY_ID.get(int(mid), []))
+        liked_cast   |= set(CAST_BY_ID.get(int(mid), []))
 
-    # Genres for the user's watched movies
-    seen_ids = ratings_df.loc[ratings_df["userId"] == user_id, "tmdbId"].unique()
-    seen_genres = []
-    for mid in seen_ids:
-        g_list = meta_unique.loc[meta_unique["id"] == mid, "genres"]
-        if not g_list.empty:
-            seen_genres.extend(g_list.iloc[0])
+    g_overlap = sorted(rec_genres & liked_genres)
+    c_overlap = sorted(rec_cast & liked_cast)
 
-    # Intersection
-    common_genres = sorted(set(rec_genres) & set(seen_genres))
+    parts = []
+    if g_overlap:
+        parts.append("shares genres " + ", ".join(g_overlap[:3]))
+    if c_overlap:
+        parts.append("features cast " + ", ".join(c_overlap[:3]))
 
-    if common_genres:
-        return "shares genres " + ", ".join(common_genres)
-    else:
-        return "no shared genres"
+    return " and ".join(parts) if parts else "matches your past highly-rated items"
 
 
 # =============================
