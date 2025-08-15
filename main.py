@@ -89,7 +89,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 # --- a) Text features (overview + tagline) ---
 # Make sure these fields exist in metadata
-meta_subset = meta_clean.copy()
+meta_subset = eda.meta_clean.copy()
 meta_subset["overview"] = meta_subset["overview"].fillna("")
 meta_subset["tagline"] = meta_subset["tagline"].fillna("")
 meta_subset["text_all"] = meta_subset["overview"] + " " + meta_subset["tagline"]
