@@ -148,6 +148,7 @@ def build_user_profile(user_id, ratings_df, item_vecs):
 
     # Mean center ratings
     mean_rating = user_ratings["rating"].mean()
+    user_ratings = ratings_df[ratings_df["userId"] == user_id].copy()
     user_ratings["adj_rating"] = user_ratings["rating"] - mean_rating
 
     # Get feature vectors for rated items
