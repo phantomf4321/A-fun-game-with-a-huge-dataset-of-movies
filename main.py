@@ -141,23 +141,27 @@ item_vectors = pd.DataFrame(item_features_reduced, index=meta_subset["id"])
 # 3) Build user profiles
 # =============================
 def build_user_profile(user_id, ratings_df, item_vecs):
-    # Get this user's ratings
-    user_ratings = ratings_df[ratings_df["userId"] == user_id]
+    user_ratings = ratings_df.loc[ratings_df["userId"] == user_id].copy()
     if user_ratings.empty:
         return None
+    mu = user_ratings["rating"].mean()
+    user_ratings["adj_rating"] = user_ratings["rating"] - mu
 
-    # Mean center ratings
-    mean_rating = user_ratings["rating"].mean()
-    user_ratings = ratings_df[ratings_df["userId"] == user_id].copy()
-    user_ratings["adj_rating"] = user_ratings["rating"] - mean_rating
+    # Align vectors (ensure index types match)
+    ids = user_ratings["tmdbId"].astype(int)
+    have = item_vecs.index.astype(int)
+    ids = ids[ids.isin(have)]
+    if ids.empty:
+        return None
 
-    # Get feature vectors for rated items
-    rated_vecs = item_vecs.loc[user_ratings["tmdbId"]]
-    weights = user_ratings["adj_rating"].values.reshape(-1, 1)
+    rated_vecs = item_vecs.loc[ids]
+    weights = user_ratings.loc[user_ratings["tmdbId"].isin(ids), "adj_rating"].values
+    if (np.abs(weights).sum() == 0) or rated_vecs.shape[0] == 0:
+        return None
 
-    # Weighted average
-    profile_vec = np.average(rated_vecs, axis=0, weights=weights.flatten())
-    return profile_vec
+    # Weighted average (centered)
+    profile = np.average(rated_vecs.values, axis=0, weights=weights)
+    return profile
 
 # =============================
 # 4) Recommend for a user
@@ -215,7 +219,8 @@ def explain_recommendation(tmdb_id, user_id, ratings_df, meta_df):
 # =============================
 # 6) Example usage
 # =============================
-user_id = 123  # example user
+
+user_id = 123
 recommendations = recommend_content(user_id, r_full, item_vectors, top_n=10)
 
 print(f"\nTop 10 recommendations for user {user_id}:")
