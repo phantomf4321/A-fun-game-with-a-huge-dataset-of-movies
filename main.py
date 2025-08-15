@@ -166,26 +166,24 @@ def build_user_profile(user_id, ratings_df, item_vecs):
 # =============================
 # 4) Recommend for a user
 # =============================
+
 def recommend_content(user_id, ratings_df, item_vecs, top_n=10):
     profile = build_user_profile(user_id, ratings_df, item_vecs)
     if profile is None:
-        # Cold start — fallback to global popularity
-        return global_wr.head(top_n)[["title", "WR"]]
+        # Cold-start fallback to popularity if available
+        if "global_wr" in globals():
+            return global_wr.head(top_n)[["tmdbId","title","WR"]].assign(similarity=np.nan)
+        # Otherwise return empty
+        return pd.DataFrame(columns=["tmdbId","title","similarity"])
 
-    # Compute cosine similarity to all items
     sims = cosine_similarity([profile], item_vecs.values)[0]
-    sim_df = pd.DataFrame({
-        "tmdbId": item_vecs.index,
-        "similarity": sims
-    })
+    sim_df = pd.DataFrame({"tmdbId": item_vecs.index.astype(int), "similarity": sims})
 
-    # Exclude items already rated by the user
-    seen = set(ratings_df.loc[ratings_df["userId"] == user_id, "tmdbId"])
+    seen = set(ratings_df.loc[ratings_df["userId"] == user_id, "tmdbId"].astype(int))
     sim_df = sim_df[~sim_df["tmdbId"].isin(seen)]
 
-    # Attach titles
-    meta_titles = meta_subset.groupby("id")["title"].first()
-    sim_df["title"] = sim_df["tmdbId"].map(meta_titles)
+    sim_df["title"] = sim_df["tmdbId"].map(TITLE_BY_ID)
+    sim_df = sim_df.dropna(subset=["title"])
     return sim_df.sort_values("similarity", ascending=False).head(top_n)
 
 # =============================
