@@ -75,3 +75,9 @@ print(per_genre_wr[per_genre_wr["genre"] == "Action"][["title", "vi", "Ri", "WR_
 # --- 4) Save results ---
 global_wr.to_csv("data/baseline/baseline_global_wr.csv", index=False)
 per_genre_wr.to_csv("data/baseline/baseline_per_genre_wr.csv", index=False)
+
+
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.preprocessing import MultiLabelBinarizer
+from sklearn.decomposition import TruncatedSVD
+from sklearn.metrics.pairwise import cosine_similarity
