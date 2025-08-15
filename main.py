@@ -141,82 +141,81 @@ item_vectors = pd.DataFrame(item_features_reduced, index=meta_subset["id"])
 # 3) Build user profiles
 # =============================
 def build_user_profile(user_id, ratings_df, item_vecs):
-    user_ratings = ratings_df.loc[ratings_df["userId"] == user_id].copy()
+    # Get this user's ratings
+    user_ratings = ratings_df[ratings_df["userId"] == user_id]
     if user_ratings.empty:
         return None
-    mu = user_ratings["rating"].mean()
-    user_ratings["adj_rating"] = user_ratings["rating"] - mu
 
-    # Align vectors (ensure index types match)
-    ids = user_ratings["tmdbId"].astype(int)
-    have = item_vecs.index.astype(int)
-    ids = ids[ids.isin(have)]
-    if ids.empty:
-        return None
+    # Mean center ratings
+    mean_rating = user_ratings["rating"].mean()
+    user_ratings = ratings_df[ratings_df["userId"] == user_id].copy()
+    user_ratings["adj_rating"] = user_ratings["rating"] - mean_rating
 
-    rated_vecs = item_vecs.loc[ids]
-    weights = user_ratings.loc[user_ratings["tmdbId"].isin(ids), "adj_rating"].values
-    if (np.abs(weights).sum() == 0) or rated_vecs.shape[0] == 0:
-        return None
+    # Get feature vectors for rated items
+    rated_vecs = item_vecs.loc[user_ratings["tmdbId"]]
+    weights = user_ratings["adj_rating"].values.reshape(-1, 1)
 
-    # Weighted average (centered)
-    profile = np.average(rated_vecs.values, axis=0, weights=weights)
-    return profile
+    # Weighted average
+    profile_vec = np.average(rated_vecs, axis=0, weights=weights.flatten())
+    return profile_vec
 
 # =============================
 # 4) Recommend for a user
 # =============================
-
 def recommend_content(user_id, ratings_df, item_vecs, top_n=10):
     profile = build_user_profile(user_id, ratings_df, item_vecs)
     if profile is None:
-        # Cold-start fallback to popularity if available
-        if "global_wr" in globals():
-            return global_wr.head(top_n)[["tmdbId","title","WR"]].assign(similarity=np.nan)
-        # Otherwise return empty
-        return pd.DataFrame(columns=["tmdbId","title","similarity"])
+        # Cold start — fallback to global popularity
+        return global_wr.head(top_n)[["title", "WR"]]
 
+    # Compute cosine similarity to all items
     sims = cosine_similarity([profile], item_vecs.values)[0]
-    sim_df = pd.DataFrame({"tmdbId": item_vecs.index.astype(int), "similarity": sims})
+    sim_df = pd.DataFrame({
+        "tmdbId": item_vecs.index,
+        "similarity": sims
+    })
 
-    seen = set(ratings_df.loc[ratings_df["userId"] == user_id, "tmdbId"].astype(int))
+    # Exclude items already rated by the user
+    seen = set(ratings_df.loc[ratings_df["userId"] == user_id, "tmdbId"])
     sim_df = sim_df[~sim_df["tmdbId"].isin(seen)]
 
-    sim_df["title"] = sim_df["tmdbId"].map(TITLE_BY_ID)
-    sim_df = sim_df.dropna(subset=["title"])
+    # Attach titles
+    meta_titles = meta_subset.groupby("id")["title"].first()
+    sim_df["title"] = sim_df["tmdbId"].map(meta_titles)
     return sim_df.sort_values("similarity", ascending=False).head(top_n)
 
 # =============================
 # 5) Natural-language explanations
 # =============================
-def explain_recommendation(tmdb_id, user_id, ratings_df):
-    rec_genres = set(GENRES_BY_ID.get(int(tmdb_id), []))
-    rec_cast   = set(CAST_BY_ID.get(int(tmdb_id), []))
+def explain_recommendation(tmdb_id, user_id, ratings_df, meta_df):
+    # Ensure unique movie rows
+    meta_unique = meta_df.drop_duplicates(subset="id")
 
-    # Use user's positively rated items for explanation context
-    liked = ratings_df.loc[(ratings_df["userId"] == user_id) & (ratings_df["rating"] >= 4.0), "tmdbId"].astype(int)
-    liked_genres, liked_cast = set(), set()
-    for mid in liked:
-        liked_genres |= set(GENRES_BY_ID.get(int(mid), []))
-        liked_cast   |= set(CAST_BY_ID.get(int(mid), []))
+    # Genres for the recommended movie
+    rec_row = meta_unique[meta_unique["id"] == tmdb_id]
+    rec_genres = rec_row["genres"].iloc[0] if not rec_row.empty else []
 
-    g_overlap = sorted(rec_genres & liked_genres)
-    c_overlap = sorted(rec_cast & liked_cast)
+    # Genres for the user's watched movies
+    seen_ids = ratings_df.loc[ratings_df["userId"] == user_id, "tmdbId"].unique()
+    seen_genres = []
+    for mid in seen_ids:
+        g_list = meta_unique.loc[meta_unique["id"] == mid, "genres"]
+        if not g_list.empty:
+            seen_genres.extend(g_list.iloc[0])
 
-    parts = []
-    if g_overlap:
-        parts.append("shares genres " + ", ".join(g_overlap[:3]))
-    if c_overlap:
-        parts.append("features cast " + ", ".join(c_overlap[:3]))
+    # Intersection
+    common_genres = sorted(set(rec_genres) & set(seen_genres))
 
-    return " and ".join(parts) if parts else "matches your past highly-rated items"
+    if common_genres:
+        return "shares genres " + ", ".join(common_genres)
+    else:
+        return "no shared genres"
 
 
 # =============================
 # 6) Example usage
 # =============================
-
-user_id = 123
+user_id = 123  # example user
 recommendations = recommend_content(user_id, r_full, item_vectors, top_n=10)
 
 print(f"\nTop 10 recommendations for user {user_id}:")
