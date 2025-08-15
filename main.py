@@ -81,3 +81,47 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import MultiLabelBinarizer
 from sklearn.decomposition import TruncatedSVD
 from sklearn.metrics.pairwise import cosine_similarity
+
+
+# =============================
+# 1) Prepare item feature matrix
+# =============================
+
+# --- a) Text features (overview + tagline) ---
+# Make sure these fields exist in metadata
+meta_subset = meta_clean.copy()
+meta_subset["overview"] = meta_subset["overview"].fillna("")
+meta_subset["tagline"] = meta_subset["tagline"].fillna("")
+meta_subset["text_all"] = meta_subset["overview"] + " " + meta_subset["tagline"]
+
+tfidf = TfidfVectorizer(stop_words="english", max_features=5000)
+tfidf_matrix = tfidf.fit_transform(meta_subset["text_all"])
+
+# --- b) Multi-hot genres ---
+mlb_genres = MultiLabelBinarizer()
+genres_matrix = mlb_genres.fit_transform(meta_subset["genres_names"].apply(lambda g: g if isinstance(g, list) else []))
+
+# --- c) Multi-hot keywords (if keywords dataset available) ---
+# For now assume we have parsed keywords as a list in meta_clean["keywords_list"]
+# If not, set as empty lists
+if "keywords_list" not in meta_subset:
+    meta_subset["keywords_list"] = [[] for _ in range(len(meta_subset))]
+mlb_keywords = MultiLabelBinarizer()
+keywords_matrix = mlb_keywords.fit_transform(meta_subset["keywords_list"])
+
+# --- d) Top-k cast/crew multi-hot (if credits dataset available) ---
+# Assume meta_subset["top_cast"] and ["top_crew"] are lists of names from preprocessing
+if "top_cast" not in meta_subset:
+    meta_subset["top_cast"] = [[] for _ in range(len(meta_subset))]
+if "top_crew" not in meta_subset:
+    meta_subset["top_crew"] = [[] for _ in range(len(meta_subset))]
+
+mlb_cast = MultiLabelBinarizer()
+cast_matrix = mlb_cast.fit_transform(meta_subset["top_cast"])
+
+mlb_crew = MultiLabelBinarizer()
+crew_matrix = mlb_crew.fit_transform(meta_subset["top_crew"])
+
+# --- e) Concatenate all features ---
+from scipy.sparse import hstack
+item_features = hstack([tfidf_matrix, genres_matrix, keywords_matrix, cast_matrix, crew_matrix])
