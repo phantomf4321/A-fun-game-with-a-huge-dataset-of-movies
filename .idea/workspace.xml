@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="01e68086-6c5f-4049-b60e-ed4e5458a7cd" name="Changes" comment="Task 3 — Content-Based Recommender">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-    </list>
+    <list default="true" id="01e68086-6c5f-4049-b60e-ed4e5458a7cd" name="Changes" comment="Task 3 — Content-Based Recommender debugging" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -76,31 +73,7 @@
       <workItem from="1754809611827" duration="1838000" />
       <workItem from="1755102599683" duration="1948000" />
       <workItem from="1755161692532" duration="6794000" />
-      <workItem from="1755271439372" duration="1937000" />
-    </task>
-    <task id="LOCAL-00024" summary="ploting tes class">
-      <option name="closed" value="true" />
-      <created>1754810027362</created>
-      <option name="number" value="00024" />
-      <option name="presentableId" value="LOCAL-00024" />
-      <option name="project" value="LOCAL" />
-      <updated>1754810027362</updated>
-    </task>
-    <task id="LOCAL-00025" summary="ploting tes class">
-      <option name="closed" value="true" />
-      <created>1754810126231</created>
-      <option name="number" value="00025" />
-      <option name="presentableId" value="LOCAL-00025" />
-      <option name="project" value="LOCAL" />
-      <updated>1754810126231</updated>
-    </task>
-    <task id="LOCAL-00026" summary="Readme">
-      <option name="closed" value="true" />
-      <created>1754810248303</created>
-      <option name="number" value="00026" />
-      <option name="presentableId" value="LOCAL-00026" />
-      <option name="project" value="LOCAL" />
-      <updated>1754810248303</updated>
+      <workItem from="1755271439372" duration="2365000" />
     </task>
     <task id="LOCAL-00027" summary="Readme">
       <option name="closed" value="true" />
@@ -470,14 +443,37 @@
       <option name="project" value="LOCAL" />
       <updated>1755273078534</updated>
     </task>
-    <option name="localTasksCounter" value="73" />
+    <task id="LOCAL-00073" summary="Task 3 — Content-Based Recommender">
+      <option name="closed" value="true" />
+      <created>1755273498401</created>
+      <option name="number" value="00073" />
+      <option name="presentableId" value="LOCAL-00073" />
+      <option name="project" value="LOCAL" />
+      <updated>1755273498401</updated>
+    </task>
+    <task id="LOCAL-00074" summary="Task 3 — Content-Based Recommender debuging">
+      <option name="closed" value="true" />
+      <created>1755273649891</created>
+      <option name="number" value="00074" />
+      <option name="presentableId" value="LOCAL-00074" />
+      <option name="project" value="LOCAL" />
+      <updated>1755273649891</updated>
+    </task>
+    <task id="LOCAL-00075" summary="Task 3 — Content-Based Recommender debugging">
+      <option name="closed" value="true" />
+      <created>1755273778905</created>
+      <option name="number" value="00075" />
+      <option name="presentableId" value="LOCAL-00075" />
+      <option name="project" value="LOCAL" />
+      <updated>1755273778905</updated>
+    </task>
+    <option name="localTasksCounter" value="76" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="EDA Long-tail of users and movies" />
     <MESSAGE value="EDA Long-tail of users and movies save_log_log_histogram" />
     <MESSAGE value="EDA cumulative_coverage" />
     <MESSAGE value="EDA Long-tail of users and movies save_log_log_histogram PLOT" />
@@ -502,10 +498,11 @@
     <MESSAGE value="Task 3 — Content-Based Recommender Natural-language explanations" />
     <MESSAGE value="Task 3 — Content-Based Recommender Example usage" />
     <MESSAGE value="Task 3 — Content-Based Recommender" />
-    <option name="LAST_COMMIT_MESSAGE" value="Task 3 — Content-Based Recommender" />
+    <MESSAGE value="Task 3 — Content-Based Recommender debugging" />
+    <option name="LAST_COMMIT_MESSAGE" value="Task 3 — Content-Based Recommender debugging" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/FinalProject$app.coverage" NAME="app Coverage Results" MODIFIED="1754756132096" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/FinalProject$main.coverage" NAME="main Coverage Results" MODIFIED="1755273238442" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/FinalProject$main.coverage" NAME="main Coverage Results" MODIFIED="1755273770700" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
