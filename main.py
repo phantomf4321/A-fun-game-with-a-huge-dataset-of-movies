@@ -99,7 +99,7 @@ tfidf_matrix = tfidf.fit_transform(meta_subset["text_all"])
 
 # --- b) Multi-hot genres ---
 mlb_genres = MultiLabelBinarizer()
-genres_matrix = mlb_genres.fit_transform(meta_subset["genres_names"].apply(lambda g: g if isinstance(g, list) else []))
+genres_matrix = mlb_genres.fit_transform(meta_subset["genres"].apply(lambda g: g if isinstance(g, list) else []))
 
 # --- c) Multi-hot keywords (if keywords dataset available) ---
 # For now assume we have parsed keywords as a list in meta_clean["keywords_list"]
@@ -187,7 +187,7 @@ def recommend_content(user_id, ratings_df, item_vecs, top_n=10):
 # =============================
 def explain_recommendation(tmdbId, user_id, ratings_df, meta_df):
     # Find top overlapping genres and cast with items user liked
-    rec_genres = set(meta_df.loc[meta_df["id"] == tmdbId, "genres_names"].values[0] or [])
+    rec_genres = set(meta_df.loc[meta_df["id"] == tmdbId, "genres"].values[0] or [])
     rec_cast = set(meta_df.loc[meta_df["id"] == tmdbId, "top_cast"].values[0] or [])
 
     # Get user's highly rated movies
@@ -197,7 +197,7 @@ def explain_recommendation(tmdbId, user_id, ratings_df, meta_df):
     liked_genres = set()
     liked_cast = set()
     for mid in liked_ids:
-        liked_genres.update(meta_df.loc[meta_df["id"] == mid, "genres_names"].values[0] or [])
+        liked_genres.update(meta_df.loc[meta_df["id"] == mid, "genres"].values[0] or [])
         liked_cast.update(meta_df.loc[meta_df["id"] == mid, "top_cast"].values[0] or [])
 
     genre_overlap = rec_genres & liked_genres

@@ -4,7 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="01e68086-6c5f-4049-b60e-ed4e5458a7cd" name="Changes" comment="Task 3 — Content-Based Recommender Prepare item feature matrix">
+    <list default="true" id="01e68086-6c5f-4049-b60e-ed4e5458a7cd" name="Changes" comment="Task 3 — Content-Based Recommender">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -75,63 +76,7 @@
       <workItem from="1754809611827" duration="1838000" />
       <workItem from="1755102599683" duration="1948000" />
       <workItem from="1755161692532" duration="6794000" />
-      <workItem from="1755271439372" duration="1147000" />
-    </task>
-    <task id="LOCAL-00017" summary="add rating_small">
-      <option name="closed" value="true" />
-      <created>1754757148090</created>
-      <option name="number" value="00017" />
-      <option name="presentableId" value="LOCAL-00017" />
-      <option name="project" value="LOCAL" />
-      <updated>1754757148090</updated>
-    </task>
-    <task id="LOCAL-00018" summary="ploting test">
-      <option name="closed" value="true" />
-      <created>1754757349227</created>
-      <option name="number" value="00018" />
-      <option name="presentableId" value="LOCAL-00018" />
-      <option name="project" value="LOCAL" />
-      <updated>1754757349227</updated>
-    </task>
-    <task id="LOCAL-00019" summary="ploting test">
-      <option name="closed" value="true" />
-      <created>1754757485406</created>
-      <option name="number" value="00019" />
-      <option name="presentableId" value="LOCAL-00019" />
-      <option name="project" value="LOCAL" />
-      <updated>1754757485406</updated>
-    </task>
-    <task id="LOCAL-00020" summary="ploting test">
-      <option name="closed" value="true" />
-      <created>1754758037836</created>
-      <option name="number" value="00020" />
-      <option name="presentableId" value="LOCAL-00020" />
-      <option name="project" value="LOCAL" />
-      <updated>1754758037836</updated>
-    </task>
-    <task id="LOCAL-00021" summary="ploting test class">
-      <option name="closed" value="true" />
-      <created>1754809867558</created>
-      <option name="number" value="00021" />
-      <option name="presentableId" value="LOCAL-00021" />
-      <option name="project" value="LOCAL" />
-      <updated>1754809867558</updated>
-    </task>
-    <task id="LOCAL-00022" summary="ploting tes class">
-      <option name="closed" value="true" />
-      <created>1754809911077</created>
-      <option name="number" value="00022" />
-      <option name="presentableId" value="LOCAL-00022" />
-      <option name="project" value="LOCAL" />
-      <updated>1754809911077</updated>
-    </task>
-    <task id="LOCAL-00023" summary="ploting tes class">
-      <option name="closed" value="true" />
-      <created>1754810001575</created>
-      <option name="number" value="00023" />
-      <option name="presentableId" value="LOCAL-00023" />
-      <option name="project" value="LOCAL" />
-      <updated>1754810001575</updated>
+      <workItem from="1755271439372" duration="1937000" />
     </task>
     <task id="LOCAL-00024" summary="ploting tes class">
       <option name="closed" value="true" />
@@ -469,19 +414,69 @@
       <option name="project" value="LOCAL" />
       <updated>1755272618783</updated>
     </task>
-    <option name="localTasksCounter" value="66" />
+    <task id="LOCAL-00066" summary="Task 3 — Content-Based Recommender Prepare item feature matrix">
+      <option name="closed" value="true" />
+      <created>1755272678135</created>
+      <option name="number" value="00066" />
+      <option name="presentableId" value="LOCAL-00066" />
+      <option name="project" value="LOCAL" />
+      <updated>1755272678136</updated>
+    </task>
+    <task id="LOCAL-00067" summary="Task 3 — Content-Based Recommender dimensionality reduction">
+      <option name="closed" value="true" />
+      <created>1755272707095</created>
+      <option name="number" value="00067" />
+      <option name="presentableId" value="LOCAL-00067" />
+      <option name="project" value="LOCAL" />
+      <updated>1755272707095</updated>
+    </task>
+    <task id="LOCAL-00068" summary="Task 3 — Content-Based Recommender Build user profiles">
+      <option name="closed" value="true" />
+      <created>1755272755539</created>
+      <option name="number" value="00068" />
+      <option name="presentableId" value="LOCAL-00068" />
+      <option name="project" value="LOCAL" />
+      <updated>1755272755539</updated>
+    </task>
+    <task id="LOCAL-00069" summary="Task 3 — Content-Based Recommender Recommend for a user">
+      <option name="closed" value="true" />
+      <created>1755272792686</created>
+      <option name="number" value="00069" />
+      <option name="presentableId" value="LOCAL-00069" />
+      <option name="project" value="LOCAL" />
+      <updated>1755272792686</updated>
+    </task>
+    <task id="LOCAL-00070" summary="Task 3 — Content-Based Recommender Natural-language explanations">
+      <option name="closed" value="true" />
+      <created>1755272831817</created>
+      <option name="number" value="00070" />
+      <option name="presentableId" value="LOCAL-00070" />
+      <option name="project" value="LOCAL" />
+      <updated>1755272831817</updated>
+    </task>
+    <task id="LOCAL-00071" summary="Task 3 — Content-Based Recommender Example usage">
+      <option name="closed" value="true" />
+      <created>1755272861718</created>
+      <option name="number" value="00071" />
+      <option name="presentableId" value="LOCAL-00071" />
+      <option name="project" value="LOCAL" />
+      <updated>1755272861718</updated>
+    </task>
+    <task id="LOCAL-00072" summary="Task 3 — Content-Based Recommender">
+      <option name="closed" value="true" />
+      <created>1755273078534</created>
+      <option name="number" value="00072" />
+      <option name="presentableId" value="LOCAL-00072" />
+      <option name="project" value="LOCAL" />
+      <updated>1755273078534</updated>
+    </task>
+    <option name="localTasksCounter" value="73" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="EDA Load with low_memory=False to avoid dtype guessing issues" />
-    <MESSAGE value="EDA log_step on GO" />
-    <MESSAGE value="EDA Ensure numeric IDs" />
-    <MESSAGE value="EDA Join ratings → links → metadata (document row counts)" />
-    <MESSAGE value="EDA Minimal filtering for valid analysis + row counts" />
-    <MESSAGE value="EDA Plot histogram" />
     <MESSAGE value="EDA Long-tail of users and movies" />
     <MESSAGE value="EDA Long-tail of users and movies save_log_log_histogram" />
     <MESSAGE value="EDA cumulative_coverage" />
@@ -501,10 +496,16 @@
     <MESSAGE value="Baseline Per-genre WR" />
     <MESSAGE value="Task 3 — Content-Based Recommender init" />
     <MESSAGE value="Task 3 — Content-Based Recommender Prepare item feature matrix" />
-    <option name="LAST_COMMIT_MESSAGE" value="Task 3 — Content-Based Recommender Prepare item feature matrix" />
+    <MESSAGE value="Task 3 — Content-Based Recommender dimensionality reduction" />
+    <MESSAGE value="Task 3 — Content-Based Recommender Build user profiles" />
+    <MESSAGE value="Task 3 — Content-Based Recommender Recommend for a user" />
+    <MESSAGE value="Task 3 — Content-Based Recommender Natural-language explanations" />
+    <MESSAGE value="Task 3 — Content-Based Recommender Example usage" />
+    <MESSAGE value="Task 3 — Content-Based Recommender" />
+    <option name="LAST_COMMIT_MESSAGE" value="Task 3 — Content-Based Recommender" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/FinalProject$app.coverage" NAME="app Coverage Results" MODIFIED="1754756132096" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/FinalProject$main.coverage" NAME="main Coverage Results" MODIFIED="1755186857701" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/FinalProject$main.coverage" NAME="main Coverage Results" MODIFIED="1755273238442" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
