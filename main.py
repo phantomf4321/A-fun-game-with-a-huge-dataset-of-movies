@@ -210,3 +210,14 @@ def explain_recommendation(tmdbId, user_id, ratings_df, meta_df):
         explanation.append(f"features cast members {', '.join(sorted(cast_overlap))}")
 
     return " and ".join(explanation) if explanation else "matches your taste profile"
+
+# =============================
+# 6) Example usage
+# =============================
+user_id = 123  # example user
+recommendations = recommend_content(user_id, r_full, item_vectors, top_n=10)
+
+print(f"\nTop 10 recommendations for user {user_id}:")
+for _, row in recommendations.iterrows():
+    expl = explain_recommendation(row["tmdbId"], user_id, r_full, meta_subset)
+    print(f"{row['title']}  —  {expl}")
