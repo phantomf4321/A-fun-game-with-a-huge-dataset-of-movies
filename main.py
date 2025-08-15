@@ -179,6 +179,7 @@ def recommend_content(user_id, ratings_df, item_vecs, top_n=10):
     seen = set(ratings_df.loc[ratings_df["userId"] == user_id, "tmdbId"])
     sim_df = sim_df[~sim_df["tmdbId"].isin(seen)]
 
+
     # Attach titles
     sim_df["title"] = sim_df["tmdbId"].map(meta_subset.set_index("id")["title"])
     return sim_df.sort_values("similarity", ascending=False).head(top_n)
