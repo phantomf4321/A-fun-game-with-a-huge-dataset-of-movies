@@ -4,8 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="01e68086-6c5f-4049-b60e-ed4e5458a7cd" name="Changes" comment="Baseline Per-genre WR">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="01e68086-6c5f-4049-b60e-ed4e5458a7cd" name="Changes" comment="Task 3 — Content-Based Recommender Prepare item feature matrix">
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -76,15 +75,7 @@
       <workItem from="1754809611827" duration="1838000" />
       <workItem from="1755102599683" duration="1948000" />
       <workItem from="1755161692532" duration="6794000" />
-      <workItem from="1755271439372" duration="848000" />
-    </task>
-    <task id="LOCAL-00016" summary="add rating_small">
-      <option name="closed" value="true" />
-      <created>1754756410718</created>
-      <option name="number" value="00016" />
-      <option name="presentableId" value="LOCAL-00016" />
-      <option name="project" value="LOCAL" />
-      <updated>1754756410718</updated>
+      <workItem from="1755271439372" duration="1147000" />
     </task>
     <task id="LOCAL-00017" summary="add rating_small">
       <option name="closed" value="true" />
@@ -470,15 +461,21 @@
       <option name="project" value="LOCAL" />
       <updated>1755186928823</updated>
     </task>
-    <option name="localTasksCounter" value="65" />
+    <task id="LOCAL-00065" summary="Task 3 — Content-Based Recommender init">
+      <option name="closed" value="true" />
+      <created>1755272618782</created>
+      <option name="number" value="00065" />
+      <option name="presentableId" value="LOCAL-00065" />
+      <option name="project" value="LOCAL" />
+      <updated>1755272618783</updated>
+    </task>
+    <option name="localTasksCounter" value="66" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="EDA to_num" />
-    <MESSAGE value="EDA add low_memory=False to init" />
     <MESSAGE value="EDA Load with low_memory=False to avoid dtype guessing issues" />
     <MESSAGE value="EDA log_step on GO" />
     <MESSAGE value="EDA Ensure numeric IDs" />
@@ -502,7 +499,9 @@
     <MESSAGE value="Baseline Compute movie-level stats from cleaned ratings" />
     <MESSAGE value="Baseline IMDb WR global baseline" />
     <MESSAGE value="Baseline Per-genre WR" />
-    <option name="LAST_COMMIT_MESSAGE" value="Baseline Per-genre WR" />
+    <MESSAGE value="Task 3 — Content-Based Recommender init" />
+    <MESSAGE value="Task 3 — Content-Based Recommender Prepare item feature matrix" />
+    <option name="LAST_COMMIT_MESSAGE" value="Task 3 — Content-Based Recommender Prepare item feature matrix" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/FinalProject$app.coverage" NAME="app Coverage Results" MODIFIED="1754756132096" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />

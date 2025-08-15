@@ -125,3 +125,13 @@ crew_matrix = mlb_crew.fit_transform(meta_subset["top_crew"])
 # --- e) Concatenate all features ---
 from scipy.sparse import hstack
 item_features = hstack([tfidf_matrix, genres_matrix, keywords_matrix, cast_matrix, crew_matrix])
+
+
+# =============================
+# 2) dimensionality reduction
+# =============================
+svd = TruncatedSVD(n_components=300, random_state=42)
+item_features_reduced = svd.fit_transform(item_features)
+
+# Map tmdbId → feature vector
+item_vectors = pd.DataFrame(item_features_reduced, index=meta_subset["id"])
