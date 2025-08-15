@@ -180,7 +180,8 @@ def recommend_content(user_id, ratings_df, item_vecs, top_n=10):
     sim_df = sim_df[~sim_df["tmdbId"].isin(seen)]
 
     # Attach titles
-    sim_df["title"] = sim_df["tmdbId"].map(meta_subset.set_index("id")["title"])
+    meta_titles = meta_subset.groupby("id")["title"].first()
+    sim_df["title"] = sim_df["tmdbId"].map(meta_titles)
     return sim_df.sort_values("similarity", ascending=False).head(top_n)
 
 # =============================
