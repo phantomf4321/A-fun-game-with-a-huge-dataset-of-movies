@@ -180,37 +180,37 @@ def recommend_content(user_id, ratings_df, item_vecs, top_n=10):
     sim_df = sim_df[~sim_df["tmdbId"].isin(seen)]
 
     # Attach titles
-    meta_titles = meta_subset.groupby("id")["title"].first()
-    sim_df["title"] = sim_df["tmdbId"].map(meta_titles)
+    sim_df["title"] = sim_df["tmdbId"].map(meta_subset.set_index("id")["title"])
     return sim_df.sort_values("similarity", ascending=False).head(top_n)
 
 # =============================
 # 5) Natural-language explanations
 # =============================
-def explain_recommendation(tmdb_id, user_id, ratings_df, meta_df):
-    # Ensure unique movie rows
-    meta_unique = meta_df.drop_duplicates(subset="id")
+def explain_recommendation(tmdbId, user_id, ratings_df, meta_df):
+    # Find top overlapping genres and cast with items user liked
+    rec_genres = set(meta_df.loc[meta_df["id"] == tmdbId, "genres"].values[0] or [])
+    rec_cast = set(meta_df.loc[meta_df["id"] == tmdbId, "top_cast"].values[0] or [])
 
-    # Genres for the recommended movie
-    rec_row = meta_unique[meta_unique["id"] == tmdb_id]
-    rec_genres = rec_row["genres"].iloc[0] if not rec_row.empty else []
+    # Get user's highly rated movies
+    liked = ratings_df[(ratings_df["userId"] == user_id) & (ratings_df["rating"] >= 4.0)]
+    liked_ids = liked["tmdbId"].tolist()
 
-    # Genres for the user's watched movies
-    seen_ids = ratings_df.loc[ratings_df["userId"] == user_id, "tmdbId"].unique()
-    seen_genres = []
-    for mid in seen_ids:
-        g_list = meta_unique.loc[meta_unique["id"] == mid, "genres"]
-        if not g_list.empty:
-            seen_genres.extend(g_list.iloc[0])
+    liked_genres = set()
+    liked_cast = set()
+    for mid in liked_ids:
+        liked_genres.update(meta_df.loc[meta_df["id"] == mid, "genres"].values[0] or [])
+        liked_cast.update(meta_df.loc[meta_df["id"] == mid, "top_cast"].values[0] or [])
 
-    # Intersection
-    common_genres = sorted(set(rec_genres) & set(seen_genres))
+    genre_overlap = rec_genres & liked_genres
+    cast_overlap = rec_cast & liked_cast
 
-    if common_genres:
-        return "shares genres " + ", ".join(common_genres)
-    else:
-        return "no shared genres"
+    explanation = []
+    if genre_overlap:
+        explanation.append(f"shares genres {', '.join(sorted(genre_overlap))}")
+    if cast_overlap:
+        explanation.append(f"features cast members {', '.join(sorted(cast_overlap))}")
 
+    return " and ".join(explanation) if explanation else "matches your taste profile"
 
 # =============================
 # 6) Example usage
