@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="01e68086-6c5f-4049-b60e-ed4e5458a7cd" name="Changes" comment="Task 4 — start" />
+    <list default="true" id="01e68086-6c5f-4049-b60e-ed4e5458a7cd" name="Changes" comment="Task 4 — debug user_user_knn">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -75,15 +77,7 @@
       <workItem from="1755161692532" duration="6794000" />
       <workItem from="1755271439372" duration="4022000" />
       <workItem from="1755612638092" duration="621000" />
-      <workItem from="1756058818558" duration="2676000" />
-    </task>
-    <task id="LOCAL-00040" summary="EDA Plot histogram">
-      <option name="closed" value="true" />
-      <created>1755162889818</created>
-      <option name="number" value="00040" />
-      <option name="presentableId" value="LOCAL-00040" />
-      <option name="project" value="LOCAL" />
-      <updated>1755162889818</updated>
+      <workItem from="1756058818558" duration="3825000" />
     </task>
     <task id="LOCAL-00041" summary="EDA Long-tail of users and movies">
       <option name="closed" value="true" />
@@ -469,14 +463,21 @@
       <option name="project" value="LOCAL" />
       <updated>1756061401687</updated>
     </task>
-    <option name="localTasksCounter" value="89" />
+    <task id="LOCAL-00089" summary="Task 4 — debug user_user_knn">
+      <option name="closed" value="true" />
+      <created>1756061818783</created>
+      <option name="number" value="00089" />
+      <option name="presentableId" value="LOCAL-00089" />
+      <option name="project" value="LOCAL" />
+      <updated>1756061818783</updated>
+    </task>
+    <option name="localTasksCounter" value="90" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="EDA Temporal dynamics (ratings over time)" />
     <MESSAGE value="EDA Temporal dynamics (ratings over time) PLOT" />
     <MESSAGE value="EDA Coverage across genres, languages, and countries" />
     <MESSAGE value="EDA Coverage across genres, languages, and countries&#10;PLOT BAR" />
@@ -501,10 +502,11 @@
     <MESSAGE value="Task 3 — output test" />
     <MESSAGE value="Task 3 — output test FINISHED" />
     <MESSAGE value="Task 4 — start" />
-    <option name="LAST_COMMIT_MESSAGE" value="Task 4 — start" />
+    <MESSAGE value="Task 4 — debug user_user_knn" />
+    <option name="LAST_COMMIT_MESSAGE" value="Task 4 — debug user_user_knn" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/FinalProject$app.coverage" NAME="app Coverage Results" MODIFIED="1754756132096" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/FinalProject$main.coverage" NAME="main Coverage Results" MODIFIED="1756061355547" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/FinalProject$main.coverage" NAME="main Coverage Results" MODIFIED="1756061801577" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
