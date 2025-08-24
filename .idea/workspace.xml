@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="01e68086-6c5f-4049-b60e-ed4e5458a7cd" name="Changes" comment="Task 3 — Content-Based Recommender debugging line 183" />
+    <list default="true" id="01e68086-6c5f-4049-b60e-ed4e5458a7cd" name="Changes" comment="Task 3 — output test">
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -75,15 +77,7 @@
       <workItem from="1755161692532" duration="6794000" />
       <workItem from="1755271439372" duration="4022000" />
       <workItem from="1755612638092" duration="621000" />
-      <workItem from="1756058818558" duration="1062000" />
-    </task>
-    <task id="LOCAL-00037" summary="EDA Ensure numeric IDs">
-      <option name="closed" value="true" />
-      <created>1755162360272</created>
-      <option name="number" value="00037" />
-      <option name="presentableId" value="LOCAL-00037" />
-      <option name="project" value="LOCAL" />
-      <updated>1755162360272</updated>
+      <workItem from="1756058818558" duration="1543000" />
     </task>
     <task id="LOCAL-00038" summary="EDA Join ratings → links → metadata (document row counts)">
       <option name="closed" value="true" />
@@ -469,14 +463,21 @@
       <option name="project" value="LOCAL" />
       <updated>1756059751196</updated>
     </task>
-    <option name="localTasksCounter" value="86" />
+    <task id="LOCAL-00086" summary="Task 3 — output test">
+      <option name="closed" value="true" />
+      <created>1756060244347</created>
+      <option name="number" value="00086" />
+      <option name="presentableId" value="LOCAL-00086" />
+      <option name="project" value="LOCAL" />
+      <updated>1756060244348</updated>
+    </task>
+    <option name="localTasksCounter" value="87" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="EDA cumulative_coverage" />
     <MESSAGE value="EDA Long-tail of users and movies save_log_log_histogram PLOT" />
     <MESSAGE value="EDA Sparsity (+ downsampled heatmap)" />
     <MESSAGE value="EDA Temporal dynamics (ratings over time)" />
@@ -501,10 +502,11 @@
     <MESSAGE value="Task 3 — Content-Based Recommender" />
     <MESSAGE value="Task 3 — Content-Based Recommender debugging" />
     <MESSAGE value="Task 3 — Content-Based Recommender debugging line 183" />
-    <option name="LAST_COMMIT_MESSAGE" value="Task 3 — Content-Based Recommender debugging line 183" />
+    <MESSAGE value="Task 3 — output test" />
+    <option name="LAST_COMMIT_MESSAGE" value="Task 3 — output test" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/FinalProject$app.coverage" NAME="app Coverage Results" MODIFIED="1754756132096" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/FinalProject$main.coverage" NAME="main Coverage Results" MODIFIED="1756059735243" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/FinalProject$main.coverage" NAME="main Coverage Results" MODIFIED="1756060322137" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
