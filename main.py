@@ -284,28 +284,34 @@ def item_item_knn(user_idx, k=50):
 
 def user_user_knn(user_idx, k=50):
     """Score items for a given user with user–user Pearson similarity."""
-    # mean-center rows
-    R_centered = R.copy().astype(float)
-    for u in range(n_users):
-        if R[u].nnz > 0:
-            R_centered[u] = R[u] - user_means[u]
+    # convert to dense array (safe if dataset <10k users/items; otherwise we can optimize)
+    R_dense = R.toarray().astype(float)
 
-    target = R_centered[user_idx, :].toarray()
-    sims = cosine_similarity(target, R_centered)[0]  # pearson ~ cosine on centered data
+    # mean-center (ignoring zeros)
+    mask = (R_dense != 0)
+    user_means = np.divide(
+        R_dense.sum(axis=1), mask.sum(axis=1), out=np.zeros_like(R_dense.sum(axis=1)), where=mask.sum(axis=1)!=0
+    )
+    R_centered = (R_dense - user_means[:, None]) * mask  # subtract mean only where ratings exist
+
+    # similarities
+    target = R_centered[user_idx, :].reshape(1, -1)
+    sims = cosine_similarity(target, R_centered)[0]
     sims[user_idx] = 0  # ignore self
 
-    # weighted sum over neighbors
-    scores = sims @ R_centered.toarray()
+    # weighted sum of neighbor ratings
+    scores = sims @ R_centered
     norms = np.abs(sims).sum()
     scores = scores / np.maximum(norms, 1e-8)
 
-    # add back user mean
+    # add back mean for this user
     scores += user_means[user_idx]
 
-    # zero out seen items
+    # filter out seen items
     seen_items = R[user_idx, :].nonzero()[1]
     scores[seen_items] = -np.inf
     return scores
+
 
 # --------------------------
 # 2) Matrix Factorization (Biased SVD via SGD)
