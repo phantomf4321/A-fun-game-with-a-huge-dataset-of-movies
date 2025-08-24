@@ -181,6 +181,8 @@ def recommend_content(user_id, ratings_df, item_vecs, top_n=10):
 
 
     # Attach titles
+
+    meta_titles = meta_subset.drop_duplicates(subset="id").set_index("id")["title"]
     sim_df["title"] = sim_df["tmdbId"].map(meta_subset.set_index("id")["title"])
     return sim_df.sort_values("similarity", ascending=False).head(top_n)
 
