@@ -4,8 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="01e68086-6c5f-4049-b60e-ed4e5458a7cd" name="Changes" comment="Task 4 — debug user_user_knn">
+    <list default="true" id="01e68086-6c5f-4049-b60e-ed4e5458a7cd" name="Changes" comment="Task 5 — debug _normalize_scores">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -77,15 +78,7 @@
       <workItem from="1755161692532" duration="6794000" />
       <workItem from="1755271439372" duration="4022000" />
       <workItem from="1755612638092" duration="621000" />
-      <workItem from="1756058818558" duration="3825000" />
-    </task>
-    <task id="LOCAL-00041" summary="EDA Long-tail of users and movies">
-      <option name="closed" value="true" />
-      <created>1755162967575</created>
-      <option name="number" value="00041" />
-      <option name="presentableId" value="LOCAL-00041" />
-      <option name="project" value="LOCAL" />
-      <updated>1755162967575</updated>
+      <workItem from="1756058818558" duration="4642000" />
     </task>
     <task id="LOCAL-00042" summary="EDA Long-tail of users and movies save_log_log_histogram">
       <option name="closed" value="true" />
@@ -471,15 +464,21 @@
       <option name="project" value="LOCAL" />
       <updated>1756061818783</updated>
     </task>
-    <option name="localTasksCounter" value="90" />
+    <task id="LOCAL-00090" summary="Task 5 — start">
+      <option name="closed" value="true" />
+      <created>1756062732100</created>
+      <option name="number" value="00090" />
+      <option name="presentableId" value="LOCAL-00090" />
+      <option name="project" value="LOCAL" />
+      <updated>1756062732100</updated>
+    </task>
+    <option name="localTasksCounter" value="91" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="EDA Temporal dynamics (ratings over time) PLOT" />
-    <MESSAGE value="EDA Coverage across genres, languages, and countries" />
     <MESSAGE value="EDA Coverage across genres, languages, and countries&#10;PLOT BAR" />
     <MESSAGE value="EDA Row-count audit trail (nice table)" />
     <MESSAGE value="EDA Save key outputs for your report" />
@@ -503,10 +502,12 @@
     <MESSAGE value="Task 3 — output test FINISHED" />
     <MESSAGE value="Task 4 — start" />
     <MESSAGE value="Task 4 — debug user_user_knn" />
-    <option name="LAST_COMMIT_MESSAGE" value="Task 4 — debug user_user_knn" />
+    <MESSAGE value="Task 5 — start" />
+    <MESSAGE value="Task 5 — debug _normalize_scores" />
+    <option name="LAST_COMMIT_MESSAGE" value="Task 5 — debug _normalize_scores" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/FinalProject$app.coverage" NAME="app Coverage Results" MODIFIED="1754756132096" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/FinalProject$main.coverage" NAME="main Coverage Results" MODIFIED="1756061801577" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/FinalProject$main.coverage" NAME="main Coverage Results" MODIFIED="1756062712190" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

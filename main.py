@@ -403,13 +403,17 @@ def _normalize_scores(x: np.ndarray) -> np.ndarray:
     x = x.astype(float).copy()
     finite = np.isfinite(x)
     if finite.sum() == 0:
-        return x
+        return np.full_like(x, -np.inf, dtype=float)  # no valid scores → all -inf
     lo, hi = np.nanmin(x[finite]), np.nanmax(x[finite])
     if hi - lo < 1e-12:
         x[finite] = 0.5
     else:
         x[finite] = (x[finite] - lo) / (hi - lo)
+    # Replace any NaNs (just in case)
+    x[~finite] = -np.inf
     return x
+
+
 
 def _seen_items_for_user(user_idx):
     return set(R[user_idx, :].nonzero()[1])
