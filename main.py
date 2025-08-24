@@ -3,9 +3,9 @@ import pandas as pd
 
 from collections import defaultdict
 
-# Surprise CF
-from surprise import Dataset, Reader, KNNBasic, KNNWithMeans, SVD
-from surprise.model_selection import train_test_split
+from scipy.sparse import csr_matrix
+from sklearn.metrics.pairwise import cosine_similarity
+from collections import defaultdict
 
 from ExploratoryDataAnalysis import EDA
 
@@ -230,3 +230,152 @@ print(f"\nTop 10 recommendations for user {user_id}:")
 for _, row in recommendations.iterrows():
     expl = explain_recommendation(row["tmdbId"], user_id, r_full, meta_subset)
     print(f"{row['title']}  —  {expl}")
+
+
+
+# --------------------------
+# 0) Build user-item matrix
+# --------------------------
+# map ids to indices
+user_ids = r_full["userId"].astype("category")
+item_ids = r_full["tmdbId"].astype("category")
+
+uid_map = dict(enumerate(user_ids.cat.categories))
+iid_map = dict(enumerate(item_ids.cat.categories))
+uid_inv = {v: k for k, v in uid_map.items()}
+iid_inv = {v: k for k, v in iid_map.items()}
+
+n_users = len(uid_map)
+n_items = len(iid_map)
+
+# sparse user-item rating matrix
+R = csr_matrix(
+    (r_full["rating"].values,
+     (user_ids.cat.codes.values, item_ids.cat.codes.values)),
+    shape=(n_users, n_items)
+)
+
+# mean ratings per user (for Pearson)
+user_means = np.array(R.sum(axis=1)).ravel() / (R != 0).sum(axis=1).A1
+
+# --------------------------
+# 1) Neighborhood CF
+# --------------------------
+
+def item_item_knn(user_idx, k=50):
+    """Score all items for a given user with item–item cosine."""
+    user_row = R[user_idx, :]
+    seen_items = user_row.nonzero()[1]
+    if len(seen_items) == 0:
+        return None
+
+    # cosine sim between seen items and all items
+    sims = cosine_similarity(R[:, seen_items].T, R.T)  # shape (#seen, n_items)
+    ratings_seen = user_row[:, seen_items].toarray().ravel()
+
+    # weighted sum
+    scores = ratings_seen @ sims
+    norms = np.abs(sims).sum(axis=0)
+    scores = scores / np.maximum(norms, 1e-8)
+
+    # zero out seen items
+    scores[seen_items] = -np.inf
+    return scores
+
+def user_user_knn(user_idx, k=50):
+    """Score items for a given user with user–user Pearson similarity."""
+    # mean-center rows
+    R_centered = R.copy().astype(float)
+    for u in range(n_users):
+        if R[u].nnz > 0:
+            R_centered[u] = R[u] - user_means[u]
+
+    target = R_centered[user_idx, :].toarray()
+    sims = cosine_similarity(target, R_centered)[0]  # pearson ~ cosine on centered data
+    sims[user_idx] = 0  # ignore self
+
+    # weighted sum over neighbors
+    scores = sims @ R_centered.toarray()
+    norms = np.abs(sims).sum()
+    scores = scores / np.maximum(norms, 1e-8)
+
+    # add back user mean
+    scores += user_means[user_idx]
+
+    # zero out seen items
+    seen_items = R[user_idx, :].nonzero()[1]
+    scores[seen_items] = -np.inf
+    return scores
+
+# --------------------------
+# 2) Matrix Factorization (Biased SVD via SGD)
+# --------------------------
+def train_mf(R, n_factors=50, n_epochs=20, lr=0.005, reg=0.02, seed=42):
+    rng = np.random.default_rng(seed)
+    n_users, n_items = R.shape
+    # latent factors
+    P = 0.1 * rng.standard_normal((n_users, n_factors))
+    Q = 0.1 * rng.standard_normal((n_items, n_factors))
+    bu = np.zeros(n_users)
+    bi = np.zeros(n_items)
+    mu = R[R.nonzero()].mean()  # global mean
+
+    rows, cols = R.nonzero()
+    for epoch in range(n_epochs):
+        for u, i in zip(rows, cols):
+            r_ui = R[u, i]
+            pred = mu + bu[u] + bi[i] + P[u, :] @ Q[i, :].T
+            err = r_ui - pred
+            # update biases
+            bu[u] += lr * (err - reg * bu[u])
+            bi[i] += lr * (err - reg * bi[i])
+            # update latent factors
+            P[u, :] += lr * (err * Q[i, :] - reg * P[u, :])
+            Q[i, :] += lr * (err * P[u, :] - reg * Q[i, :])
+    return mu, bu, bi, P, Q
+
+mu, bu, bi, P, Q = train_mf(R, n_factors=50, n_epochs=15, lr=0.01, reg=0.05)
+
+def mf_scores(user_idx):
+    """Predict scores for all items for given user."""
+    scores = mu + bu[user_idx] + bi + P[user_idx, :] @ Q.T
+    seen = R[user_idx, :].nonzero()[1]
+    scores[seen] = -np.inf
+    return scores
+
+# --------------------------
+# 3) Recommend function
+# --------------------------
+def recommend(user_id, method="mf", k=10):
+    if user_id not in uid_inv:
+        # cold-start fallback
+        if "global_wr" in globals():
+            return global_wr.head(k)[["tmdbId","title","WR"]].rename(columns={"WR":"score"})
+        return pd.DataFrame(columns=["tmdbId","title","score"])
+
+    user_idx = uid_inv[user_id]
+    if method == "itemknn":
+        scores = item_item_knn(user_idx)
+    elif method == "userknn":
+        scores = user_user_knn(user_idx)
+    else:
+        scores = mf_scores(user_idx)
+
+    top_idx = np.argpartition(-scores, k)[:k]
+    top_idx = top_idx[np.argsort(-scores[top_idx])]
+    tmdb_ids = [iid_map[i] for i in top_idx]
+    titles = [TITLE_BY_ID[int(t)] if "TITLE_BY_ID" in globals() else str(t) for t in tmdb_ids]
+    return pd.DataFrame({"tmdbId": tmdb_ids, "title": titles, "score": scores[top_idx]})
+
+# --------------------------
+# Example Usage
+# --------------------------
+user_id = 123
+print("\nTop-10 MF recommendations:")
+print(recommend(user_id, method="mf", k=10))
+
+print("\nTop-10 Item–Item recommendations:")
+print(recommend(user_id, method="itemknn", k=10))
+
+print("\nTop-10 User–User recommendations:")
+print(recommend(user_id, method="userknn", k=10))
