@@ -188,10 +188,26 @@ def recommend_content(user_id, ratings_df, item_vecs, top_n=10):
 # =============================
 # 5) Natural-language explanations
 # =============================
+import ast
+
+
 def explain_recommendation(tmdbId, user_id, ratings_df, meta_df):
+    # Safely convert string representations to actual lists
+    def safe_convert_to_list(value):
+        if isinstance(value, list):
+            return value
+        elif isinstance(value, str):
+            try:
+                return ast.literal_eval(value)
+            except (ValueError, SyntaxError):
+                return []
+        return []
+
     # Find top overlapping genres and cast with items user liked
-    rec_genres = set(meta_df.loc[meta_df["id"] == tmdbId, "genres"].values[0] or [])
-    rec_cast = set(meta_df.loc[meta_df["id"] == tmdbId, "top_cast"].values[0] or [])
+    rec_genres = set(safe_convert_to_list(meta_df.loc[meta_df["id"] == tmdbId, "genres"].values[0] if not meta_df.loc[
+        meta_df["id"] == tmdbId, "genres"].empty else []))
+    rec_cast = set(safe_convert_to_list(meta_df.loc[meta_df["id"] == tmdbId, "top_cast"].values[0] if not meta_df.loc[
+        meta_df["id"] == tmdbId, "top_cast"].empty else []))
 
     # Get user's highly rated movies
     liked = ratings_df[(ratings_df["userId"] == user_id) & (ratings_df["rating"] >= 4.0)]
@@ -200,8 +216,14 @@ def explain_recommendation(tmdbId, user_id, ratings_df, meta_df):
     liked_genres = set()
     liked_cast = set()
     for mid in liked_ids:
-        liked_genres.update(meta_df.loc[meta_df["id"] == mid, "genres"].values[0] or [])
-        liked_cast.update(meta_df.loc[meta_df["id"] == mid, "top_cast"].values[0] or [])
+        # Safely extract genres and cast for each liked movie
+        genres_data = meta_df.loc[meta_df["id"] == mid, "genres"]
+        cast_data = meta_df.loc[meta_df["id"] == mid, "top_cast"]
+
+        if not genres_data.empty:
+            liked_genres.update(safe_convert_to_list(genres_data.values[0]))
+        if not cast_data.empty:
+            liked_cast.update(safe_convert_to_list(cast_data.values[0]))
 
     genre_overlap = rec_genres & liked_genres
     cast_overlap = rec_cast & liked_cast
@@ -213,6 +235,7 @@ def explain_recommendation(tmdbId, user_id, ratings_df, meta_df):
         explanation.append(f"features cast members {', '.join(sorted(cast_overlap))}")
 
     return " and ".join(explanation) if explanation else "matches your taste profile"
+
 
 # =============================
 # 6) Example usage
