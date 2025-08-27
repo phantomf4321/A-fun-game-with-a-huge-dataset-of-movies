@@ -193,3 +193,8 @@ class Recommendator:
         print("Recomendor setup complete!")
 
     def dimensionality_reduction(self):
+        svd = TruncatedSVD(n_components=300, random_state=42)
+        item_features_reduced = svd.fit_transform(self.item_features)
+
+        # Map tmdbId → feature vector
+        self.item_vectors = pd.DataFrame(item_features_reduced, index=self.meta_subset["id"])

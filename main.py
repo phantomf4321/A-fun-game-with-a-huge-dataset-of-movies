@@ -28,17 +28,6 @@ recom.setup()
 
 
 
-
-# =============================
-# 2) dimensionality reduction
-# =============================
-svd = TruncatedSVD(n_components=300, random_state=42)
-item_features_reduced = svd.fit_transform(item_features)
-
-# Map tmdbId → feature vector
-item_vectors = pd.DataFrame(item_features_reduced, index=meta_subset["id"])
-
-
 # =============================
 # 3) Build user profiles
 # =============================
