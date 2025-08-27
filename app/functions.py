@@ -191,3 +191,5 @@ class Recommendator:
 
 
         print("Recomendor setup complete!")
+
+    def dimensionality_reduction(self):

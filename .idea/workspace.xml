@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="01e68086-6c5f-4049-b60e-ed4e5458a7cd" name="Changes" comment="base line final_results">
+    <list default="true" id="01e68086-6c5f-4049-b60e-ed4e5458a7cd" name="Changes" comment="base line Recommendator">
+      <change beforePath="$PROJECT_DIR$/app/functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/functions.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/baseline.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/baseline.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -81,15 +81,7 @@
       <workItem from="1755612638092" duration="621000" />
       <workItem from="1756058818558" duration="5462000" />
       <workItem from="1756312426967" duration="75000" />
-      <workItem from="1756313418277" duration="5535000" />
-    </task>
-    <task id="LOCAL-00054" summary="EDA Row-count audit trail (nice table)">
-      <option name="closed" value="true" />
-      <created>1755182620838</created>
-      <option name="number" value="00054" />
-      <option name="presentableId" value="LOCAL-00054" />
-      <option name="project" value="LOCAL" />
-      <updated>1755182620839</updated>
+      <workItem from="1756313418277" duration="6131000" />
     </task>
     <task id="LOCAL-00055" summary="EDA Save key outputs for your report">
       <option name="closed" value="true" />
@@ -475,14 +467,21 @@
       <option name="project" value="LOCAL" />
       <updated>1756319008001</updated>
     </task>
-    <option name="localTasksCounter" value="103" />
+    <task id="LOCAL-00103" summary="base line Recommendator">
+      <option name="closed" value="true" />
+      <created>1756319198780</created>
+      <option name="number" value="00103" />
+      <option name="presentableId" value="LOCAL-00103" />
+      <option name="project" value="LOCAL" />
+      <updated>1756319198780</updated>
+    </task>
+    <option name="localTasksCounter" value="104" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="EDA all in one ExploratoryDataAnalysis" />
     <MESSAGE value="EDA all in one ExploratoryDataAnalysis test on main" />
     <MESSAGE value="Baseline Compute movie-level stats from cleaned ratings" />
     <MESSAGE value="Baseline IMDb WR global baseline" />
@@ -507,7 +506,8 @@
     <MESSAGE value="base line top_10_globally_popular_movies" />
     <MESSAGE value="base line Per_genre" />
     <MESSAGE value="base line final_results" />
-    <option name="LAST_COMMIT_MESSAGE" value="base line final_results" />
+    <MESSAGE value="base line Recommendator" />
+    <option name="LAST_COMMIT_MESSAGE" value="base line Recommendator" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/FinalProject$baseline.coverage" NAME="baseline Coverage Results" MODIFIED="1756318709929" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/models" />

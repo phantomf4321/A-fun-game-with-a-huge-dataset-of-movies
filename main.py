@@ -9,27 +9,22 @@ from collections import defaultdict
 
 from ExploratoryDataAnalysis import EDA
 from models.baseline import Baseline
+from app.functions import Recommendator
 
 
 eda = EDA()
 r_full = eda.get_r_full()
 baseline = Baseline(r_full)
-
 baseline.final_results()
+
+meta_subset = eda.meta_clean.copy()
+recom = Recommendator(meta_subset)
+recom.setup()
+
 """
 
 
 
-
-
-
-# =============================
-# 1) Prepare item feature matrix
-# =============================
-
-# --- a) Text features (overview + tagline) ---
-# Make sure these fields exist in metadata
-meta_subset = eda.meta_clean.copy()
 
 
 
