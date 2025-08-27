@@ -396,211 +396,301 @@ print(recommend(user_id, method="userknn", k=10))
 # mf_scores / item_item_knn / user_user_knn (Task 4)
 # global_wr: popularity fallback (Task 2)
 # TITLE_BY_ID: optional dict tmdbId -> title (Task 3)
-
 # ---------- 1) Utilities ----------
+
 def _normalize_scores(x: np.ndarray) -> np.ndarray:
     """Min-max normalize per-user over finite scores; keep -inf as -inf."""
     x = x.astype(float).copy()
-    finite = np.isfinite(x)
-    if finite.sum() == 0:
-        return np.full_like(x, -np.inf, dtype=float)  # no valid scores → all -inf
-    lo, hi = np.nanmin(x[finite]), np.nanmax(x[finite])
+    finite_mask = np.isfinite(x)
+
+    if not np.any(finite_mask):
+        return np.full_like(x, -np.inf, dtype=float)
+
+    finite_scores = x[finite_mask]
+    lo, hi = np.min(finite_scores), np.max(finite_scores)
+
     if hi - lo < 1e-12:
-        x[finite] = 0.5
+        x[finite_mask] = 0.5
     else:
-        x[finite] = (x[finite] - lo) / (hi - lo)
-    # Replace any NaNs (just in case)
-    x[~finite] = -np.inf
+        x[finite_mask] = (finite_scores - lo) / (hi - lo)
+
     return x
 
 
-
-def _seen_items_for_user(user_idx):
+def _seen_items_for_user(user_idx: int) -> set:
+    """Get set of seen item indices for a user."""
     return set(R[user_idx, :].nonzero()[1])
 
-# ---------- 2) Content-based per-user score vector (aligned to CF items) ----------
-def cb_scores_for_user(user_id: int, k_exclude_seen=True) -> np.ndarray:
+
+# ---------- 2) Content-based per-user score vector ----------
+def cb_scores_for_user(user_id: int, exclude_seen: bool = True) -> np.ndarray:
     """
-    Returns a length-n_items vector of CB similarities for this user,
-    aligned to item index ordering in iid_map. Unseen = similarity, seen = -inf (if k_exclude_seen).
+    Returns CB similarity scores for all items for a given user.
+    Unseen items get -inf if exclude_seen=True.
     """
-    # Build user profile exactly like Task 3 (mean-centered, rating-weighted)
-    u_df = r_full[r_full["userId"] == user_id]
-    if u_df.empty:
-        return None  # cold user for CB
-
-    mean_r = u_df["rating"].mean()
-    u_df = u_df.assign(adj=u_df["rating"] - mean_r)
-
-    # Align to items we actually have vectors for
-    have_vec = item_vectors.index.astype(int)
-    rated_ids = u_df["tmdbId"].astype(int)
-    mask = rated_ids.isin(have_vec)
-    if not mask.any():
+    # Get user ratings
+    user_ratings = r_full[r_full["userId"] == user_id]
+    if user_ratings.empty:
         return None
 
-    rated_ids = rated_ids[mask].values
-    weights = u_df.loc[mask.index[mask], "adj"].values
+    # Calculate mean-centered adjusted ratings
+    mean_rating = user_ratings["rating"].mean()
+    user_ratings = user_ratings.copy()
+    user_ratings["adjusted_rating"] = user_ratings["rating"] - mean_rating
 
-    # Remove duplicates and aggregate weights for the same item
-    unique_ids, unique_indices = np.unique(rated_ids, return_inverse=True)
-    unique_weights = np.zeros(len(unique_ids))
+    # Filter to items with available vectors
+    available_items = set(item_vectors.index.astype(int))
+    user_items = user_ratings["tmdbId"].astype(int)
+    valid_mask = user_items.isin(available_items)
 
-    for i, idx in enumerate(unique_indices):
-        unique_weights[idx] += weights[i]
-
-    # Get vectors for unique items
-    vectors = item_vectors.loc[unique_ids].values
-
-    # Filter out zero weights to avoid division issues
-    non_zero_mask = np.abs(unique_weights) > 1e-10
-    if not non_zero_mask.any():
+    if not valid_mask.any():
         return None
 
-    vectors = vectors[non_zero_mask]
-    unique_weights = unique_weights[non_zero_mask]
+    valid_items = user_items[valid_mask].values
+    valid_weights = user_ratings.loc[valid_mask.index[valid_mask], "adjusted_rating"].values
 
-    if np.allclose(np.abs(unique_weights).sum(), 0.0):
+    # Aggregate weights for duplicate items
+    item_weights = {}
+    for item_id, weight in zip(valid_items, valid_weights):
+        item_weights[item_id] = item_weights.get(item_id, 0) + weight
+
+    # Filter out items with negligible weights and check if weights sum to zero
+    filtered_items = []
+    filtered_weights = []
+    total_weight = 0.0
+
+    for item_id, weight in item_weights.items():
+        if abs(weight) > 1e-10:
+            filtered_items.append(item_id)
+            filtered_weights.append(weight)
+            total_weight += abs(weight)
+
+    # If all weights are zero or negligible, use uniform weights
+    if total_weight < 1e-10:
+        filtered_items = list(item_weights.keys())
+        filtered_weights = [1.0] * len(filtered_items)  # Uniform weights
+        print(f"User {user_id}: Using uniform weights (adjusted ratings sum to zero)")
+
+    if not filtered_items:
         return None
 
-    # Weighted average profile
-    profile = np.average(vectors, axis=0, weights=unique_weights)
+    # Get vectors and compute weighted average profile
+    try:
+        item_vectors_subset = item_vectors.loc[filtered_items].values
 
-    # Similarity to all items
-    sims = cosine_similarity([profile], item_vectors.values)[0]  # length = #items with vectors
+        # Safe weighted average with zero-division protection
+        if np.sum(np.abs(filtered_weights)) < 1e-10:
+            profile = np.mean(item_vectors_subset, axis=0)
+        else:
+            profile = np.average(item_vectors_subset, axis=0, weights=filtered_weights)
 
-    # Now expand to all items in CF order
+    except (KeyError, ValueError) as e:
+        print(f"Error processing user {user_id}: {e}")
+        return None
+
+    # Compute similarities to all items
+    all_item_vectors = item_vectors.values
+    similarities = cosine_similarity([profile], all_item_vectors)[0]
+
+    # Map similarities to CF item ordering
     n_items = len(iid_map)
     scores = np.full(n_items, -np.inf, dtype=float)
-    # Build map tmdbId->col_index in item_vectors
-    tv_idx = {int(mid): j for j, mid in enumerate(item_vectors.index.astype(int))}
-    for j in range(n_items):
-        tmdb = int(iid_map[j])
-        if tmdb in tv_idx:
-            scores[j] = sims[tv_idx[tmdb]]
 
-    # Optionally exclude seen
-    if k_exclude_seen and user_id in uid_inv:
-        uidx = uid_inv[user_id]
-        seen = _seen_items_for_user(uidx)
-        if seen:
-            scores[list(seen)] = -np.inf
+    # Create mapping from tmdbId to item_vectors index
+    vector_idx_map = {int(mid): idx for idx, mid in enumerate(item_vectors.index.astype(int))}
+
+    for cf_idx in range(n_items):
+        tmdb_id = int(iid_map[cf_idx])
+        if tmdb_id in vector_idx_map:
+            scores[cf_idx] = similarities[vector_idx_map[tmdb_id]]
+
+    # Exclude already seen items if requested
+    if exclude_seen and user_id in uid_inv:
+        user_idx = uid_inv[user_id]
+        seen_indices = _seen_items_for_user(user_idx)
+        scores[list(seen_indices)] = -np.inf
 
     return scores
 
+
 # ---------- 3) CF score router ----------
-def cf_scores_for_user(user_id: int, method="mf") -> np.ndarray:
+def cf_scores_for_user(user_id: int, method: str = "mf") -> np.ndarray:
+    """Get collaborative filtering scores for a user."""
     if user_id not in uid_inv:
         return None
-    uidx = uid_inv[user_id]
+
+    user_idx = uid_inv[user_id]
+
     if method == "itemknn":
-        return item_item_knn(uidx)
+        return item_item_knn(user_idx)
     elif method == "userknn":
-        return user_user_knn(uidx)
+        return user_user_knn(user_idx)
     else:
-        return mf_scores(uidx)
+        return mf_scores(user_idx)
+
 
 # ---------- 4) Hybrid scorer ----------
-def hybrid_scores(user_id: int, alpha=0.5, cf_method="mf") -> np.ndarray:
-    s_cb = cb_scores_for_user(user_id)
-    s_cf = cf_scores_for_user(user_id, method=cf_method)
+def hybrid_scores(user_id: int, alpha: float = 0.5, cf_method: str = "mf") -> np.ndarray:
+    """Combine CB and CF scores using weighted average."""
+    cb_scores = cb_scores_for_user(user_id)
+    cf_scores = cf_scores_for_user(user_id, method=cf_method)
 
-    # Fallback logic if one side is missing
-    if s_cb is None and s_cf is None:
+    # Fallback strategies
+    if cb_scores is None and cf_scores is None:
         return None
-    if s_cb is None:
-        return _normalize_scores(s_cf)
-    if s_cf is None:
-        return _normalize_scores(s_cb)
+    if cb_scores is None:
+        return _normalize_scores(cf_scores)
+    if cf_scores is None:
+        return _normalize_scores(cb_scores)
 
-    # Normalize then blend
-    s_cb_n = _normalize_scores(s_cb)
-    s_cf_n = _normalize_scores(s_cf)
-    return alpha * s_cf_n + (1.0 - alpha) * s_cb_n
+    # Normalize both score vectors
+    cb_normalized = _normalize_scores(cb_scores)
+    cf_normalized = _normalize_scores(cf_scores)
 
-# ---------- 5) Top-N recommend from any score vector ----------
-def topk_from_scores(scores: np.ndarray, k=10) -> np.ndarray:
-    finite = np.isfinite(scores)
-    if not finite.any():
+    # Blend only where both scores are valid
+    valid_mask = np.isfinite(cb_normalized) & np.isfinite(cf_normalized)
+    blended_scores = np.full_like(cb_normalized, -np.inf, dtype=float)
+
+    if np.any(valid_mask):
+        blended_scores[valid_mask] = (
+                alpha * cf_normalized[valid_mask] +
+                (1.0 - alpha) * cb_normalized[valid_mask]
+        )
+
+    return blended_scores
+
+
+# ---------- 5) Top-N recommendation ----------
+def topk_from_scores(scores: np.ndarray, k: int = 10) -> np.ndarray:
+    """Get top-k item indices from score vector."""
+    valid_scores_mask = np.isfinite(scores)
+    if not np.any(valid_scores_mask):
         return np.array([], dtype=int)
-    cand = np.where(finite)[0]
-    if len(cand) <= k:
-        order = cand[np.argsort(-scores[cand])]
-        return order
-    # partial argpartition for speed
-    idx = np.argpartition(-scores[cand], k)[:k]
-    top = cand[idx]
-    return top[np.argsort(-scores[top])]
 
-def recommend_hybrid(user_id: int, alpha=0.6, cf_method="mf", k=10) -> pd.DataFrame:
-    s = hybrid_scores(user_id, alpha=alpha, cf_method=cf_method)
-    if s is None or (~np.isfinite(s)).all():
-        # Coldest fallback to popularity
+    valid_indices = np.where(valid_scores_mask)[0]
+    valid_scores = scores[valid_scores_mask]
+
+    if len(valid_indices) <= k:
+        return valid_indices[np.argsort(-valid_scores)]
+
+    # Use argpartition for efficiency with large arrays
+    top_k_indices = np.argpartition(-valid_scores, k)[:k]
+    top_k_items = valid_indices[top_k_indices]
+
+    # Return sorted by score (descending)
+    return top_k_items[np.argsort(-scores[top_k_items])]
+
+
+def recommend_hybrid(user_id: int, alpha: float = 0.6, cf_method: str = "mf", k: int = 10) -> pd.DataFrame:
+    """Generate hybrid recommendations for a user."""
+    scores = hybrid_scores(user_id, alpha=alpha, cf_method=cf_method)
+
+    # Fallback to global popularity if no valid scores
+    if scores is None or not np.any(np.isfinite(scores)):
         if "global_wr" in globals():
-            out = global_wr.head(k)[["tmdbId","title","WR"]].rename(columns={"WR":"score"}).copy()
-            return out
-        return pd.DataFrame(columns=["tmdbId","title","score"])
-    top_idx = topk_from_scores(s, k=k)
-    tmdb_ids = [iid_map[i] for i in top_idx]
-    titles = [TITLE_BY_ID.get(int(t), str(t)) if "TITLE_BY_ID" in globals() else str(t) for t in tmdb_ids]
-    return pd.DataFrame({"tmdbId": tmdb_ids, "title": titles, "score": s[top_idx]})
+            return global_wr.head(k)[["tmdbId", "title", "WR"]].rename(columns={"WR": "score"})
+        return pd.DataFrame(columns=["tmdbId", "title", "score"])
 
-# ---------- 6) Validation split + α tuning (Recall@K under LLOO) ----------
-def leave_last_one_out(df: pd.DataFrame):
-    df = df.sort_values(["userId","timestamp"])
-    last = df.groupby("userId")["timestamp"].idxmax()
-    test = df.loc[last]
-    train = df.drop(index=last, errors="ignore")
-    # keep users with >=2 interactions in both sides
-    multi = df["userId"].value_counts()
-    test = test[test["userId"].isin(multi[multi>=2].index)]
-    return train, test
+    # Get top-k recommendations
+    top_indices = topk_from_scores(scores, k=k)
+    recommendations = []
 
-def build_seen_dict(df: pd.DataFrame):
-    d = {}
-    for uid, g in df.groupby("userId"):
-        d[uid] = set(g["tmdbId"].astype(int).tolist())
-    return d
+    for idx in top_indices:
+        tmdb_id = iid_map[idx]
+        title = TITLE_BY_ID.get(int(tmdb_id), str(tmdb_id)) if "TITLE_BY_ID" in globals() else str(tmdb_id)
+        score = scores[idx]
+        recommendations.append({"tmdbId": tmdb_id, "title": title, "score": score})
 
-def tune_alpha(ratings_df: pd.DataFrame, cf_method="mf", K=10, grid=None) -> float:
-    """
-    Tune α by maximizing Recall@K on a LLOO validation set.
-    """
-    if grid is None:
-        grid = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+    return pd.DataFrame(recommendations)
+
+
+# ---------- 6) Validation and tuning ----------
+def leave_last_one_out(ratings_df: pd.DataFrame) -> tuple:
+    """Split data using leave-last-one-out validation."""
+    ratings_sorted = ratings_df.sort_values(["userId", "timestamp"])
+    last_indices = ratings_sorted.groupby("userId")["timestamp"].idxmax()
+
+    test_set = ratings_sorted.loc[last_indices]
+    train_set = ratings_sorted.drop(last_indices, errors="ignore")
+
+    # Keep only users with sufficient interactions
+    user_counts = ratings_sorted["userId"].value_counts()
+    valid_users = user_counts[user_counts >= 2].index
+    test_set = test_set[test_set["userId"].isin(valid_users)]
+
+    return train_set, test_set
+
+
+def tune_alpha(ratings_df: pd.DataFrame, cf_method: str = "mf", K: int = 10,
+               alpha_grid: list = None) -> float:
+    """Tune alpha parameter using Recall@K on validation set."""
+    if alpha_grid is None:
+        alpha_grid = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
 
     train_df, val_df = leave_last_one_out(ratings_df)
-    # For tuning we only need the held-out item per user
-    heldout = dict(zip(val_df["userId"].astype(int), val_df["tmdbId"].astype(int)))
+    heldout_items = dict(zip(val_df["userId"].astype(int), val_df["tmdbId"].astype(int)))
 
-    recalls = []
-    for a in grid:
-        hits, total = 0, 0
-        for uid, iid_true in heldout.items():
-            s = hybrid_scores(uid, alpha=a, cf_method=cf_method)
-            if s is None:
+    best_alpha = 0.5
+    best_recall = 0.0
+    recall_results = []
+
+    for alpha in alpha_grid:
+        hits = 0
+        valid_users = 0
+
+        for user_id, true_item in heldout_items.items():
+            scores = hybrid_scores(user_id, alpha=alpha, cf_method=cf_method)
+            if scores is None:
                 continue
-            top = topk_from_scores(s, k=K)
-            if len(top) == 0:
+
+            recommendations = topk_from_scores(scores, k=K)
+            if len(recommendations) == 0:
                 continue
-            # map back to tmdbId
-            top_tmdb = {int(iid_map[i]) for i in top}
-            hits += int(iid_true in top_tmdb)
-            total += 1
-        recalls.append(hits / max(1, total))
-    best_idx = int(np.argmax(recalls))
-    best_alpha = grid[best_idx]
-    print(f"[Hybrid] Tuned alpha={best_alpha} (Recall@{K}={recalls[best_idx]:.3f}) over grid {grid}")
+
+            # Convert CF indices to tmdbIds
+            recommended_items = {int(iid_map[idx]) for idx in recommendations}
+            if true_item in recommended_items:
+                hits += 1
+            valid_users += 1
+
+        recall = hits / max(1, valid_users)
+        recall_results.append(recall)
+
+        if recall > best_recall:
+            best_recall = recall
+            best_alpha = alpha
+
+    print(f"Alpha tuning results:")
+    for alpha, recall in zip(alpha_grid, recall_results):
+        print(f"  α={alpha}: Recall@{K}={recall:.3f}")
+    print(f"Best alpha: {best_alpha} (Recall@{K}={best_recall:.3f})")
+
     return best_alpha
 
-# ---------- 7) Example: tune and recommend ----------
-# IMPORTANT: r_full userId/tmdbId must be ints here
-ratings_small = r_full[["userId","tmdbId","rating","timestamp"]].copy()
+
+# ---------- 7) Example usage ----------
+# Prepare data
+ratings_small = r_full[["userId", "tmdbId", "rating", "timestamp"]].copy()
 ratings_small["userId"] = ratings_small["userId"].astype(int)
 ratings_small["tmdbId"] = ratings_small["tmdbId"].astype(int)
 
-best_alpha = tune_alpha(ratings_small, cf_method="mf", K=10, grid=[0.0,0.25,0.5,0.6,0.7,0.75,1.0])
+# Tune alpha parameter
+try:
+    best_alpha = tune_alpha(
+        ratings_small,
+        cf_method="mf",
+        K=10,
+        alpha_grid=[0.0, 0.25, 0.5, 0.6, 0.7, 0.75, 1.0]
+    )
+except Exception as e:
+    print(f"Error during alpha tuning: {e}")
+    best_alpha = 0.6  # Fallback value
 
+# Generate recommendations for a user
 user_id = 123
-print("\nTop-10 Hybrid (MF+CB) recommendations:")
-print(recommend_hybrid(user_id, alpha=best_alpha, cf_method="mf", k=10))
+print(f"\nTop-10 Hybrid (MF+CB) recommendations for user {user_id}:")
+try:
+    recommendations = recommend_hybrid(user_id, alpha=best_alpha, cf_method="mf", k=10)
+    print(recommendations)
+except Exception as e:
+    print(f"Error generating recommendations: {e}")
