@@ -441,12 +441,30 @@ def cb_scores_for_user(user_id: int, k_exclude_seen=True) -> np.ndarray:
 
     rated_ids = rated_ids[mask].values
     weights = u_df.loc[mask.index[mask], "adj"].values
-    if np.allclose(np.abs(weights).sum(), 0.0):
+
+    # Remove duplicates and aggregate weights for the same item
+    unique_ids, unique_indices = np.unique(rated_ids, return_inverse=True)
+    unique_weights = np.zeros(len(unique_ids))
+
+    for i, idx in enumerate(unique_indices):
+        unique_weights[idx] += weights[i]
+
+    # Get vectors for unique items
+    vectors = item_vectors.loc[unique_ids].values
+
+    # Filter out zero weights to avoid division issues
+    non_zero_mask = np.abs(unique_weights) > 1e-10
+    if not non_zero_mask.any():
+        return None
+
+    vectors = vectors[non_zero_mask]
+    unique_weights = unique_weights[non_zero_mask]
+
+    if np.allclose(np.abs(unique_weights).sum(), 0.0):
         return None
 
     # Weighted average profile
-    vectors = item_vectors.loc[rated_ids].values
-    profile = np.average(vectors, axis=0, weights=weights)
+    profile = np.average(vectors, axis=0, weights=unique_weights)
 
     # Similarity to all items
     sims = cosine_similarity([profile], item_vectors.values)[0]  # length = #items with vectors
