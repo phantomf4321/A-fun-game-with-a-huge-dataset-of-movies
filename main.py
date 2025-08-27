@@ -20,10 +20,7 @@ baseline.final_results()
 
 
 
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.preprocessing import MultiLabelBinarizer
-from sklearn.decomposition import TruncatedSVD
-from sklearn.metrics.pairwise import cosine_similarity
+
 
 
 # =============================

@@ -5,6 +5,10 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from collections import defaultdict
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.preprocessing import MultiLabelBinarizer
+from sklearn.decomposition import TruncatedSVD
+from sklearn.metrics.pairwise import cosine_similarity
 
 class General_Operations:
     def __init__(self):
@@ -140,3 +144,8 @@ class Plot:
         filename = "src/" + filename + ".png"
         plt.savefig(filename)
         print("log log histogram of {} is saved in {} successfully!".format("heatmap", filename))
+
+
+class Recommendator:
+    def __init__(self):
+        print("Recommendator is constructed")
