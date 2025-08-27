@@ -37,28 +37,7 @@ def build_user_profile():
 # =============================
 # 4) Recommend for a user
 # =============================
-def recommend_content(user_id, ratings_df, item_vecs, top_n=10):
-    profile = build_user_profile(user_id, ratings_df, item_vecs)
-    if profile is None:
-        # Cold start — fallback to global popularity
-        return global_wr.head(top_n)[["title", "WR"]]
 
-    # Compute cosine similarity to all items
-    sims = cosine_similarity([profile], item_vecs.values)[0]
-    sim_df = pd.DataFrame({
-        "tmdbId": item_vecs.index,
-        "similarity": sims
-    })
-
-    # Exclude items already rated by the user
-    seen = set(ratings_df.loc[ratings_df["userId"] == user_id, "tmdbId"])
-    sim_df = sim_df[~sim_df["tmdbId"].isin(seen)]
-
-
-    # Attach titles
-    meta_titles = meta_subset.groupby("id")["title"].first()
-    sim_df["title"] = sim_df["tmdbId"].map(meta_titles)
-    return sim_df.sort_values("similarity", ascending=False).head(top_n)
 
 # =============================
 # 5) Natural-language explanations

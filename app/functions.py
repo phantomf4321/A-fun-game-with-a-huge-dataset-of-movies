@@ -218,3 +218,25 @@ class Recommendator:
         self.profile_vec = np.average(rated_vecs, axis=0, weights=weights.flatten())
 
         return self.profile_vec
+
+    def recommend_content(self, user_id, ratings_df, item_vecs, top_n=10):
+        profile = self.build_user_profile(user_id, ratings_df, item_vecs)
+        if profile is None:
+            # Cold start — fallback to global popularity
+            return self.global_wr.head(top_n)[["title", "WR"]]
+
+        # Compute cosine similarity to all items
+        sims = cosine_similarity([profile], item_vecs.values)[0]
+        self.sim_df = pd.DataFrame({
+            "tmdbId": item_vecs.index,
+            "similarity": sims
+        })
+
+        # Exclude items already rated by the user
+        seen = set(ratings_df.loc[ratings_df["userId"] == user_id, "tmdbId"])
+        self.sim_df = self.sim_df[~self.sim_df["tmdbId"].isin(seen)]
+
+        # Attach titles
+        meta_titles = self.meta_subset.groupby("id")["title"].first()
+        self.sim_df["title"] = self.sim_df["tmdbId"].map(meta_titles)
+        return self.sim_df.sort_values("similarity", ascending=False).head(top_n)
