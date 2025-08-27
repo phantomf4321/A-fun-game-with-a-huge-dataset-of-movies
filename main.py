@@ -20,7 +20,7 @@ baseline.final_results()
 meta_subset = eda.meta_clean.copy()
 recom = Recommendator(meta_subset)
 recom.setup()
-
+recom.dimensionality_reduction()
 """
 
 
@@ -31,24 +31,8 @@ recom.setup()
 # =============================
 # 3) Build user profiles
 # =============================
-def build_user_profile(user_id, ratings_df, item_vecs):
-    # Get this user's ratings
-    user_ratings = ratings_df[ratings_df["userId"] == user_id]
-    if user_ratings.empty:
-        return None
-
-    # Mean center ratings
-    mean_rating = user_ratings["rating"].mean()
-    user_ratings = ratings_df[ratings_df["userId"] == user_id].copy()
-    user_ratings["adj_rating"] = user_ratings["rating"] - mean_rating
-
-    # Get feature vectors for rated items
-    rated_vecs = item_vecs.loc[user_ratings["tmdbId"]]
-    weights = user_ratings["adj_rating"].values.reshape(-1, 1)
-
-    # Weighted average
-    profile_vec = np.average(rated_vecs, axis=0, weights=weights.flatten())
-    return profile_vec
+def build_user_profile():
+    
 
 # =============================
 # 4) Recommend for a user

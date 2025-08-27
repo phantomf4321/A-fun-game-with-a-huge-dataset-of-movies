@@ -189,12 +189,32 @@ class Recommendator:
         # --- Concatenate all features ---
         self.item_features = hstack([self.tfidf_matrix, self.genres_matrix, self.keywords_matrix, self.cast_matrix, self.crew_matrix])
 
-
         print("Recomendor setup complete!")
 
     def dimensionality_reduction(self):
         svd = TruncatedSVD(n_components=300, random_state=42)
         item_features_reduced = svd.fit_transform(self.item_features)
-
         # Map tmdbId → feature vector
         self.item_vectors = pd.DataFrame(item_features_reduced, index=self.meta_subset["id"])
+
+        print("Recomendor dimensionality_reduction complete!")
+
+    def build_user_profile(self, user_id, ratings_df, item_vecs):
+        # Get this user's ratings
+        user_ratings = ratings_df[ratings_df["userId"] == user_id]
+        if user_ratings.empty:
+            return None
+
+        # Mean center ratings
+        mean_rating = user_ratings["rating"].mean()
+        user_ratings = ratings_df[ratings_df["userId"] == user_id].copy()
+        user_ratings["adj_rating"] = user_ratings["rating"] - mean_rating
+
+        # Get feature vectors for rated items
+        rated_vecs = item_vecs.loc[user_ratings["tmdbId"]]
+        weights = user_ratings["adj_rating"].values.reshape(-1, 1)
+
+        # Weighted average
+        self.profile_vec = np.average(rated_vecs, axis=0, weights=weights.flatten())
+
+        return self.profile_vec
