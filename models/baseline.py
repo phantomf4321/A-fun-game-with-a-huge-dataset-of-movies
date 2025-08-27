@@ -38,13 +38,13 @@ class Baseline():
         global_wr = self.movie_stats[self.movie_stats["vi"] >= m].copy()
         global_wr = global_wr.sort_values("WR", ascending=False)
 
-        resaults = {
+        results = {
             "C": C,
             "m": m,
             "global_wr": global_wr
         }
 
-        return resaults
+        return results
 
     # --- Per-genre WR ---
     def genre_wr(self, group, Cg):
@@ -78,3 +78,23 @@ class Baseline():
         )
 
         return per_genre_wr
+
+    def final_results(self):
+
+        res = self.top_10_globally_popular_movies()
+        C = res["C"]
+        m = res["m"]
+        global_wr = res["global_wr"]
+
+        print("Global WR parameters:")
+        print({"C": round(C, 3), "m": int(m), "m_quantile": 0.80})
+        print("\nTop 10 globally popular movies (WR):")
+        print(global_wr[["title", "vi", "Ri", "WR"]].head(10))
+
+        per_genre_wr = self.Per_genre()
+
+        # Saving
+        global_wr.to_csv("data/baseline/baseline_global_wr.csv", index=False)
+        per_genre_wr.to_csv("data/baseline/baseline_per_genre_wr.csv", index=False)
+
+        print("Baseline's results are saved successfully!")

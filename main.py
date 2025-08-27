@@ -15,26 +15,9 @@ eda = EDA()
 r_full = eda.get_r_full()
 baseline = Baseline(r_full)
 
-res = baseline.top_10_globally_popular_movies()
-C = res["C"]
-m = res["m"]
-global_wr = res["global_wr"]
-
-
-print("Global WR parameters:")
-print({"C": round(C, 3), "m": int(m), "m_quantile": 0.80})
-print("\nTop 10 globally popular movies (WR):")
-print(global_wr[["title", "vi", "Ri", "WR"]].head(10))
-
-
-per_genre_wr = baseline.Per_genre()
-
-print("\nPer-genre WR example (Action):")
-print(per_genre_wr[per_genre_wr["genre"] == "Action"][["title", "vi", "Ri", "WR_g"]].head(10))
+baseline.final_results()
 """
-# --- 4) Save results ---
-global_wr.to_csv("data/baseline/baseline_global_wr.csv", index=False)
-per_genre_wr.to_csv("data/baseline/baseline_per_genre_wr.csv", index=False)
+
 
 
 from sklearn.feature_extraction.text import TfidfVectorizer
