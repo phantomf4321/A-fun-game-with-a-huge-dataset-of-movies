@@ -47,7 +47,19 @@ class Baseline():
         return resaults
 
     # --- Per-genre WR ---
+    def genre_wr(self, group, Cg):
+        """Calculate weighted rating for a genre group."""
+        m_g = np.quantile(group["vi"], 0.80) if len(group) else 0
+        C_g = Cg.get(group.name, group["Ri"].mean())
+        v = group["vi"]
+        R = group["Ri"]
+        group["WR_g"] = (v / (v + m_g)) * R + (m_g / (v + m_g)) * C_g
+        group["m_g"] = m_g
+        group["C_g"] = C_g
+        return group[group["vi"] >= m_g].sort_values("WR_g", ascending=False)
+
     def Per_genre(self):
+        """Calculate per-genre weighted ratings."""
         # --- Per-genre WR ---
         rows = []
         for _, row in self.movie_stats.iterrows():
@@ -60,8 +72,9 @@ class Baseline():
         exploded = self.r_full.explode("genres").rename(columns={"genres": "genre"})
         Cg = exploded.groupby("genre")["rating"].mean()
 
-        # Apply WR within each genre - FIXED: use partial to bind Cg argument
-        genre_wr_with_cg = partial(self.genre_wr, Cg=Cg)
-        per_genre_wr = per_genre_df.groupby("genre", group_keys=False).apply(genre_wr_with_cg)
+        # Apply WR within each genre
+        per_genre_wr = per_genre_df.groupby("genre", group_keys=False).apply(
+            lambda group: self.genre_wr(group, Cg)
+        )
 
         return per_genre_wr
