@@ -58,26 +58,19 @@ class Baseline():
         group["C_g"] = C_g
         return group[group["vi"] >= m_g].sort_values("WR_g", ascending=False)
 
-    def Per_genre(self):
-        """Calculate per-genre weighted ratings."""
-        # --- Per-genre WR ---
-        rows = []
-        for _, row in self.movie_stats.iterrows():
-            genres = row["genres"] if isinstance(row["genres"], list) and row["genres"] else ["(No Genre)"]
-            for g in genres:
-                rows.append((g, row["tmdbId"], row["title"], row["vi"], row["Ri"]))
-        per_genre_df = pd.DataFrame(rows, columns=["genre", "tmdbId", "title", "vi", "Ri"])
+    def genre_wr(self, group, Cg):
+        """Calculate weighted rating for a genre group."""
+        # Extract the genre name from the group (it's the index/group name)
+        genre_name = group.name if hasattr(group, 'name') else None
 
-        # For C_g, use all ratings in r_full for that genre
-        exploded = self.r_full.explode("genres").rename(columns={"genres": "genre"})
-        Cg = exploded.groupby("genre")["rating"].mean()
-
-        # Apply WR within each genre
-        per_genre_wr = per_genre_df.groupby("genre", group_keys=False).apply(
-            lambda group: self.genre_wr(group, Cg)
-        )
-
-        return per_genre_wr
+        m_g = np.quantile(group["vi"], 0.80) if len(group) else 0
+        C_g = Cg.get(genre_name, group["Ri"].mean())  # Use the actual genre name
+        v = group["vi"]
+        R = group["Ri"]
+        group["WR_g"] = (v / (v + m_g)) * R + (m_g / (v + m_g)) * C_g
+        group["m_g"] = m_g
+        group["C_g"] = C_g
+        return group[group["vi"] >= m_g].sort_values("WR_g", ascending=False)
 
     def final_results(self):
 
