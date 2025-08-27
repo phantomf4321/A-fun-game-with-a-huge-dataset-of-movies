@@ -8,13 +8,23 @@ from sklearn.metrics.pairwise import cosine_similarity
 from collections import defaultdict
 
 from ExploratoryDataAnalysis import EDA
+from models.baseline import Baseline
 
 
 eda = EDA()
 r_full = eda.get_r_full()
+baseline = Baseline(r_full)
+
+top_10_globally_popular_movies = baseline.top_10_globally_popular_movies()
+C = top_10_globally_popular_movies("C")
+m = top_10_globally_popular_movies("m")
+global_wr = top_10_globally_popular_movies("global_wr")
 
 
-
+print("Global WR parameters:")
+print({"C": round(C, 3), "m": int(m), "m_quantile": 0.80})
+print("\nTop 10 globally popular movies (WR):")
+print(global_wr[["title", "vi", "Ri", "WR"]].head(10))
 
 
 """
