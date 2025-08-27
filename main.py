@@ -16,12 +16,8 @@ r_full = eda.get_r_full()
 
 
 
-print("Global WR parameters:")
-print({"C": round(C, 3), "m": int(m), "m_quantile": 0.80})
-print("\nTop 10 globally popular movies (WR):")
-print(global_wr[["title", "vi", "Ri", "WR"]].head(10))
 
-
+"""
 # --- 3) Per-genre WR ---
 rows = []
 for _, row in movie_stats.iterrows():
@@ -235,7 +231,7 @@ user_means = np.array(R.sum(axis=1)).ravel() / (R != 0).sum(axis=1).A1
 # --------------------------
 
 def item_item_knn(user_idx, k=50):
-    """Score all items for a given user with item–item cosine."""
+    ""Score all items for a given user with item–item cosine.""
     user_row = R[user_idx, :]
     seen_items = user_row.nonzero()[1]
     if len(seen_items) == 0:
@@ -255,7 +251,7 @@ def item_item_knn(user_idx, k=50):
     return scores
 
 def user_user_knn(user_idx, k=50):
-    """Score items for a given user with user–user Pearson similarity."""
+    ""Score items for a given user with user–user Pearson similarity.""
     # convert to dense array (safe if dataset <10k users/items; otherwise we can optimize)
     R_dense = R.toarray().astype(float)
 
@@ -315,7 +311,7 @@ def train_mf(R, n_factors=50, n_epochs=20, lr=0.005, reg=0.02, seed=42):
 mu, bu, bi, P, Q = train_mf(R, n_factors=50, n_epochs=15, lr=0.01, reg=0.05)
 
 def mf_scores(user_idx):
-    """Predict scores for all items for given user."""
+    ""Predict scores for all items for given user.""
     scores = mu + bu[user_idx] + bi + P[user_idx, :] @ Q.T
     seen = R[user_idx, :].nonzero()[1]
     scores[seen] = -np.inf
@@ -371,7 +367,7 @@ print(recommend(user_id, method="userknn", k=10))
 # ---------- 1) Utilities ----------
 
 def _normalize_scores(x: np.ndarray) -> np.ndarray:
-    """Min-max normalize per-user over finite scores; keep -inf as -inf."""
+    ""Min-max normalize per-user over finite scores; keep -inf as -inf.""
     x = x.astype(float).copy()
     finite_mask = np.isfinite(x)
 
@@ -390,16 +386,16 @@ def _normalize_scores(x: np.ndarray) -> np.ndarray:
 
 
 def _seen_items_for_user(user_idx: int) -> set:
-    """Get set of seen item indices for a user."""
+    ""Get set of seen item indices for a user.""
     return set(R[user_idx, :].nonzero()[1])
 
 
 # ---------- 2) Content-based per-user score vector ----------
 def cb_scores_for_user(user_id: int, exclude_seen: bool = True) -> np.ndarray:
-    """
+    ""
     Returns CB similarity scores for all items for a given user.
     Unseen items get -inf if exclude_seen=True.
-    """
+    ""
     # Get user ratings
     user_ratings = r_full[r_full["userId"] == user_id]
     if user_ratings.empty:
@@ -487,7 +483,7 @@ def cb_scores_for_user(user_id: int, exclude_seen: bool = True) -> np.ndarray:
 
 # ---------- 3) CF score router ----------
 def cf_scores_for_user(user_id: int, method: str = "mf") -> np.ndarray:
-    """Get collaborative filtering scores for a user."""
+    ""Get collaborative filtering scores for a user.""
     if user_id not in uid_inv:
         return None
 
@@ -503,7 +499,7 @@ def cf_scores_for_user(user_id: int, method: str = "mf") -> np.ndarray:
 
 # ---------- 4) Hybrid scorer ----------
 def hybrid_scores(user_id: int, alpha: float = 0.5, cf_method: str = "mf") -> np.ndarray:
-    """Combine CB and CF scores using weighted average."""
+    ""Combine CB and CF scores using weighted average.""
     cb_scores = cb_scores_for_user(user_id)
     cf_scores = cf_scores_for_user(user_id, method=cf_method)
 
@@ -534,7 +530,7 @@ def hybrid_scores(user_id: int, alpha: float = 0.5, cf_method: str = "mf") -> np
 
 # ---------- 5) Top-N recommendation ----------
 def topk_from_scores(scores: np.ndarray, k: int = 10) -> np.ndarray:
-    """Get top-k item indices from score vector."""
+    ""Get top-k item indices from score vector.""
     valid_scores_mask = np.isfinite(scores)
     if not np.any(valid_scores_mask):
         return np.array([], dtype=int)
@@ -554,7 +550,7 @@ def topk_from_scores(scores: np.ndarray, k: int = 10) -> np.ndarray:
 
 
 def recommend_hybrid(user_id: int, alpha: float = 0.6, cf_method: str = "mf", k: int = 10) -> pd.DataFrame:
-    """Generate hybrid recommendations for a user."""
+    ""Generate hybrid recommendations for a user.""
     scores = hybrid_scores(user_id, alpha=alpha, cf_method=cf_method)
 
     # Fallback to global popularity if no valid scores
@@ -578,7 +574,7 @@ def recommend_hybrid(user_id: int, alpha: float = 0.6, cf_method: str = "mf", k:
 
 # ---------- 6) Validation and tuning ----------
 def leave_last_one_out(ratings_df: pd.DataFrame) -> tuple:
-    """Split data using leave-last-one-out validation."""
+    ""Split data using leave-last-one-out validation.""
     ratings_sorted = ratings_df.sort_values(["userId", "timestamp"])
     last_indices = ratings_sorted.groupby("userId")["timestamp"].idxmax()
 
@@ -595,7 +591,7 @@ def leave_last_one_out(ratings_df: pd.DataFrame) -> tuple:
 
 def tune_alpha(ratings_df: pd.DataFrame, cf_method: str = "mf", K: int = 10,
                alpha_grid: list = None) -> float:
-    """Tune alpha parameter using Recall@K on validation set."""
+    ""Tune alpha parameter using Recall@K on validation set.""
     if alpha_grid is None:
         alpha_grid = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
 
@@ -665,4 +661,4 @@ try:
     recommendations = recommend_hybrid(user_id, alpha=best_alpha, cf_method="mf", k=10)
     print(recommendations)
 except Exception as e:
-    print(f"Error generating recommendations: {e}")
+    print(f"Error generating recommendations: {e}")"""
