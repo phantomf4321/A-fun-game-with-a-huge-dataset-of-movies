@@ -9,6 +9,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import MultiLabelBinarizer
 from sklearn.decomposition import TruncatedSVD
 from sklearn.metrics.pairwise import cosine_similarity
+from scipy.sparse import hstack
 
 class General_Operations:
     def __init__(self):
@@ -147,5 +148,46 @@ class Plot:
 
 
 class Recommendator:
-    def __init__(self):
+    def __init__(self, meta_subset):
         print("Recommendator is constructed")
+        self.meta_subset = meta_subset
+
+    def setup(self):
+        # --- Text features (overview + tagline) ---
+        self.meta_subset["overview"] = self.meta_subset["overview"].fillna("")
+        self.meta_subset["tagline"] = self.meta_subset["tagline"].fillna("")
+        self.meta_subset["text_all"] = self.meta_subset["overview"] + " " + self.meta_subset["tagline"]
+        self.tfidf = TfidfVectorizer(stop_words="english", max_features=5000)
+        self.tfidf_matrix = self.tfidf.fit_transform(self.meta_subset["text_all"])
+
+        # --- Multi-hot genres ---
+        self.mlb_genres = MultiLabelBinarizer()
+        self.genres_matrix = self.mlb_genres.fit_transform(
+            self.meta_subset["genres"].apply(lambda g: g if isinstance(g, list) else []))
+
+        # --- Multi-hot keywords (if keywords dataset available) ---
+        # For now assume we have parsed keywords as a list in meta_clean["keywords_list"]
+        # If not, set as empty lists
+        if "keywords_list" not in self.meta_subset:
+            self.meta_subset["keywords_list"] = [[] for _ in range(len(self.meta_subset))]
+        self.mlb_keywords = MultiLabelBinarizer()
+        self.keywords_matrix = self.mlb_keywords.fit_transform(self.meta_subset["keywords_list"])
+
+        # --- Top-k cast/crew multi-hot (if credits dataset available) ---
+        # Assume meta_subset["top_cast"] and ["top_crew"] are lists of names from preprocessing
+        if "top_cast" not in self.meta_subset:
+            self.meta_subset["top_cast"] = [[] for _ in range(len(self.meta_subset))]
+        if "top_crew" not in self.meta_subset:
+            self.meta_subset["top_crew"] = [[] for _ in range(len(self.meta_subset))]
+
+        self.mlb_cast = MultiLabelBinarizer()
+        self.cast_matrix = self.mlb_cast.fit_transform(self.meta_subset["top_cast"])
+
+        self.mlb_crew = MultiLabelBinarizer()
+        self.crew_matrix = self.mlb_crew.fit_transform(self.meta_subset["top_crew"])
+
+        # --- Concatenate all features ---
+        self.item_features = hstack([self.tfidf_matrix, self.genres_matrix, self.keywords_matrix, self.cast_matrix, self.crew_matrix])
+
+
+        print("Recomendor setup complete!")
