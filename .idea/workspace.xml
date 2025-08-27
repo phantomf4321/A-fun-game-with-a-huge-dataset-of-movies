@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="01e68086-6c5f-4049-b60e-ed4e5458a7cd" name="Changes" comment="Task 5 — debug _normalize_scores">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+    <list default="true" id="01e68086-6c5f-4049-b60e-ed4e5458a7cd" name="Changes" comment="base line">
+      <change beforePath="$PROJECT_DIR$/models/baseline.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/baseline.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -80,23 +79,7 @@
       <workItem from="1755612638092" duration="621000" />
       <workItem from="1756058818558" duration="5462000" />
       <workItem from="1756312426967" duration="75000" />
-      <workItem from="1756313418277" duration="2605000" />
-    </task>
-    <task id="LOCAL-00044" summary="EDA Long-tail of users and movies save_log_log_histogram PLOT">
-      <option name="closed" value="true" />
-      <created>1755163562897</created>
-      <option name="number" value="00044" />
-      <option name="presentableId" value="LOCAL-00044" />
-      <option name="project" value="LOCAL" />
-      <updated>1755163562897</updated>
-    </task>
-    <task id="LOCAL-00045" summary="EDA Long-tail of users and movies save_log_log_histogram PLOT">
-      <option name="closed" value="true" />
-      <created>1755163584215</created>
-      <option name="number" value="00045" />
-      <option name="presentableId" value="LOCAL-00045" />
-      <option name="project" value="LOCAL" />
-      <updated>1755163584215</updated>
+      <workItem from="1756313418277" duration="3077000" />
     </task>
     <task id="LOCAL-00046" summary="EDA Long-tail of users and movies save_log_log_histogram PLOT">
       <option name="closed" value="true" />
@@ -474,14 +457,29 @@
       <option name="project" value="LOCAL" />
       <updated>1756314215495</updated>
     </task>
-    <option name="localTasksCounter" value="93" />
+    <task id="LOCAL-00093" summary="base line">
+      <option name="closed" value="true" />
+      <created>1756316390022</created>
+      <option name="number" value="00093" />
+      <option name="presentableId" value="LOCAL-00093" />
+      <option name="project" value="LOCAL" />
+      <updated>1756316390022</updated>
+    </task>
+    <task id="LOCAL-00094" summary="base line">
+      <option name="closed" value="true" />
+      <created>1756316495006</created>
+      <option name="number" value="00094" />
+      <option name="presentableId" value="LOCAL-00094" />
+      <option name="project" value="LOCAL" />
+      <updated>1756316495006</updated>
+    </task>
+    <option name="localTasksCounter" value="95" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="EDA Coverage across genres, languages, and countries&#10;PLOT BAR" />
     <MESSAGE value="EDA Row-count audit trail (nice table)" />
     <MESSAGE value="EDA Save key outputs for your report" />
     <MESSAGE value="EDA all in one" />
@@ -506,7 +504,8 @@
     <MESSAGE value="Task 4 — debug user_user_knn" />
     <MESSAGE value="Task 5 — start" />
     <MESSAGE value="Task 5 — debug _normalize_scores" />
-    <option name="LAST_COMMIT_MESSAGE" value="Task 5 — debug _normalize_scores" />
+    <MESSAGE value="base line" />
+    <option name="LAST_COMMIT_MESSAGE" value="base line" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/FinalProject$app.coverage" NAME="app Coverage Results" MODIFIED="1754756132096" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
