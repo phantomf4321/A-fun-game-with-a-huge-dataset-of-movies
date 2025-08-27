@@ -21,63 +21,20 @@ meta_subset = eda.meta_clean.copy()
 recom = Recommendator(meta_subset)
 recom.setup()
 recom.dimensionality_reduction()
-"""
 
-
-
-
-
-
-# =============================
-# 3) Build user profiles
-# =============================
-def build_user_profile():
-    
-
-# =============================
-# 4) Recommend for a user
-# =============================
-
-
-# =============================
-# 5) Natural-language explanations
-# =============================
-def explain_recommendation(tmdbId, user_id, ratings_df, meta_df):
-    # Find top overlapping genres and cast with items user liked
-    rec_genres = set(meta_df.loc[meta_df["id"] == tmdbId, "genres"].values or [])
-    rec_cast = set(meta_df.loc[meta_df["id"] == tmdbId, "top_cast"].values or [])
-
-    # Get user's highly rated movies
-    liked = ratings_df[(ratings_df["userId"] == user_id) & (ratings_df["rating"] >= 4.0)]
-    liked_ids = liked["tmdbId"].tolist()
-
-    liked_genres = set()
-    liked_cast = set()
-    for mid in liked_ids:
-        liked_genres.update(meta_df.loc[meta_df["id"] == mid, "genres"].values or [])
-        liked_cast.update(meta_df.loc[meta_df["id"] == mid, "top_cast"].values or [])
-
-    genre_overlap = rec_genres & liked_genres
-    cast_overlap = rec_cast & liked_cast
-
-    explanation = []
-    if genre_overlap:
-        explanation.append(f"shares genres {', '.join(sorted(genre_overlap))}")
-    if cast_overlap:
-        explanation.append(f"features cast members {', '.join(sorted(cast_overlap))}")
-
-    return " and ".join(explanation) if explanation else "matches your taste profile"
-
-# =============================
-# 6) Example usage
-# =============================
 user_id = 123  # example user
-recommendations = recommend_content(user_id, r_full, item_vectors, top_n=10)
+recommendations = recom.recommend_content(user_id, r_full, recom.item_vectors, top_n=10)
 
 print(f"\nTop 10 recommendations for user {user_id}:")
 for _, row in recommendations.iterrows():
-    expl = explain_recommendation(row["tmdbId"], user_id, r_full, meta_subset)
+    expl = recom.explain_recommendation(row["tmdbId"], user_id, r_full, meta_subset)
     print(f"{row['title']}  —  {expl}")
+
+
+"""
+# =============================
+# 6) Example usage
+# =============================
 
 
 

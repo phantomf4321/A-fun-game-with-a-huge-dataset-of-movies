@@ -240,3 +240,29 @@ class Recommendator:
         meta_titles = self.meta_subset.groupby("id")["title"].first()
         self.sim_df["title"] = self.sim_df["tmdbId"].map(meta_titles)
         return self.sim_df.sort_values("similarity", ascending=False).head(top_n)
+
+    def explain_recommendation(self, tmdbId, user_id, ratings_df, meta_df):
+        # Find top overlapping genres and cast with items user liked
+        rec_genres = set(meta_df.loc[meta_df["id"] == tmdbId, "genres"].values or [])
+        rec_cast = set(meta_df.loc[meta_df["id"] == tmdbId, "top_cast"].values or [])
+
+        # Get user's highly rated movies
+        liked = ratings_df[(ratings_df["userId"] == user_id) & (ratings_df["rating"] >= 4.0)]
+        liked_ids = liked["tmdbId"].tolist()
+
+        liked_genres = set()
+        liked_cast = set()
+        for mid in liked_ids:
+            liked_genres.update(meta_df.loc[meta_df["id"] == mid, "genres"].values or [])
+            liked_cast.update(meta_df.loc[meta_df["id"] == mid, "top_cast"].values or [])
+
+        genre_overlap = rec_genres & liked_genres
+        cast_overlap = rec_cast & liked_cast
+
+        self.explanation = []
+        if genre_overlap:
+            self.explanation.append(f"shares genres {', '.join(sorted(genre_overlap))}")
+        if cast_overlap:
+            self.explanation.append(f"features cast members {', '.join(sorted(cast_overlap))}")
+
+        return " and ".join(self.explanation) if self.explanation else "matches your taste profile"
