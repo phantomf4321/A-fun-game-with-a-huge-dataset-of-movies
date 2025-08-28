@@ -400,3 +400,271 @@ class KNN:
         tmdb_ids = [self.iid_map[i] for i in top_idx]
         titles = [TITLE_BY_ID[int(t)] if "TITLE_BY_ID" in globals() else str(t) for t in tmdb_ids]
         return pd.DataFrame({"tmdbId": tmdb_ids, "title": titles, "score": scores[top_idx]})
+
+class Hybrid:
+    def __init__(self, R, r_full, item_vectors, iid_map, uid_inv, global_wr):
+        self.R = R
+        self.r_full = r_full
+        self.item_vectors = item_vectors
+        self.iid_map = iid_map
+        self.uid_inv = uid_inv
+        self.global_wr = global_wr
+        self.knn = KNN(r_full)
+        print("Hybrid model is called!")
+
+    def _normalize_scores(self, x: np.ndarray) -> np.ndarray:
+        """ Min - max normalize per - user over finite scores; keep - inf as -inf."""
+        x = x.astype(float).copy()
+        finite_mask = np.isfinite(x)
+
+        if not np.any(finite_mask):
+            return np.full_like(x, -np.inf, dtype=float)
+
+        finite_scores = x[finite_mask]
+        lo, hi = np.min(finite_scores), np.max(finite_scores)
+
+        if hi - lo < 1e-12:
+            x[finite_mask] = 0.5
+        else:
+            x[finite_mask] = (finite_scores - lo) / (hi - lo)
+
+        return x
+
+    def _seen_items_for_user(self, user_idx: int) -> set:
+        """Get set of seen item indices for a user."""
+        return set(self.R[user_idx, :].nonzero()[1])
+
+    # ---------- Content-based per-user score vector ----------
+    def cb_scores_for_user(self, user_id: int, exclude_seen: bool = True) -> np.ndarray:
+        """Returns CB similarity scores for all items for a given user. Unseen items get - inf if exclude_seen = True."""
+        # Get user ratings
+        user_ratings = self.r_full[self.r_full["userId"] == user_id]
+        if user_ratings.empty:
+            return None
+
+        # Calculate mean-centered adjusted ratings
+        mean_rating = user_ratings["rating"].mean()
+        user_ratings = user_ratings.copy()
+        user_ratings["adjusted_rating"] = user_ratings["rating"] - mean_rating
+
+        # Filter to items with available vectors
+        available_items = set(self.item_vectors.index.astype(int))
+        user_items = user_ratings["tmdbId"].astype(int)
+        valid_mask = user_items.isin(available_items)
+
+        if not valid_mask.any():
+            return None
+
+        valid_items = user_items[valid_mask].values
+        valid_weights = user_ratings.loc[valid_mask.index[valid_mask], "adjusted_rating"].values
+
+        # Aggregate weights for duplicate items
+        item_weights = {}
+        for item_id, weight in zip(valid_items, valid_weights):
+            item_weights[item_id] = item_weights.get(item_id, 0) + weight
+
+        # Filter out items with negligible weights and check if weights sum to zero
+        filtered_items = []
+        filtered_weights = []
+        total_weight = 0.0
+
+        for item_id, weight in item_weights.items():
+            if abs(weight) > 1e-10:
+                filtered_items.append(item_id)
+                filtered_weights.append(weight)
+                total_weight += abs(weight)
+
+        # If all weights are zero or negligible, use uniform weights
+        if total_weight < 1e-10:
+            filtered_items = list(item_weights.keys())
+            filtered_weights = [1.0] * len(filtered_items)  # Uniform weights
+            print(f"User {user_id}: Using uniform weights (adjusted ratings sum to zero)")
+
+        if not filtered_items:
+            return None
+
+        # Get vectors and compute weighted average profile
+        try:
+            item_vectors_subset = self.item_vectors.loc[filtered_items].values
+
+            # Safe weighted average with zero-division protection
+            if np.sum(np.abs(filtered_weights)) < 1e-10:
+                profile = np.mean(item_vectors_subset, axis=0)
+            else:
+                profile = np.average(item_vectors_subset, axis=0, weights=filtered_weights)
+
+        except (KeyError, ValueError) as e:
+            print(f"Error processing user {user_id}: {e}")
+            return None
+
+        # Compute similarities to all items
+        all_item_vectors = self.item_vectors.values
+        similarities = cosine_similarity([profile], all_item_vectors)[0]
+
+        # Map similarities to CF item ordering
+        n_items = len(self.iid_map)
+        scores = np.full(n_items, -np.inf, dtype=float)
+
+        # Create mapping from tmdbId to item_vectors index
+        vector_idx_map = {int(mid): idx for idx, mid in enumerate(self.item_vectors.index.astype(int))}
+
+        for cf_idx in range(n_items):
+            tmdb_id = int(self.iid_map[cf_idx])
+            if tmdb_id in vector_idx_map:
+                scores[cf_idx] = similarities[vector_idx_map[tmdb_id]]
+
+        # Exclude already seen items if requested
+        if exclude_seen and user_id in self.uid_inv:
+            user_idx = self.uid_inv[user_id]
+            seen_indices = self._seen_items_for_user(user_idx)
+            scores[list(seen_indices)] = -np.inf
+
+        return scores
+
+    # ---------- CF score router ----------
+    def cf_scores_for_user(self, user_id: int, method: str = "mf") -> np.ndarray:
+        """Get collaborative filtering scores for a user."""
+        if user_id not in self.uid_inv:
+            return None
+
+        user_idx = self.uid_inv[user_id]
+
+        if method == "itemknn":
+            return self.knn.item_item_knn(user_idx)
+        elif method == "userknn":
+            return self.knn.user_user_knn(user_idx)
+        else:
+            return self.knn.mf_scores(user_idx)
+
+    # ---------- Hybrid scorer ----------
+    def hybrid_scores(self, user_id: int, alpha: float = 0.5, cf_method: str = "mf") -> np.ndarray:
+        """Combine CB and CF scores using weighted average."""
+        cb_scores = self.cb_scores_for_user(user_id)
+        cf_scores = self.cf_scores_for_user(user_id, method=cf_method)
+
+        # Fallback strategies
+        if cb_scores is None and cf_scores is None:
+            return None
+        if cb_scores is None:
+            return self._normalize_scores(cf_scores)
+        if cf_scores is None:
+            return self._normalize_scores(cb_scores)
+
+        # Normalize both score vectors
+        cb_normalized = self._normalize_scores(cb_scores)
+        cf_normalized = self._normalize_scores(cf_scores)
+
+        # Blend only where both scores are valid
+        valid_mask = np.isfinite(cb_normalized) & np.isfinite(cf_normalized)
+        blended_scores = np.full_like(cb_normalized, -np.inf, dtype=float)
+
+        if np.any(valid_mask):
+            blended_scores[valid_mask] = (
+                    alpha * cf_normalized[valid_mask] +
+                    (1.0 - alpha) * cb_normalized[valid_mask]
+            )
+
+        return blended_scores
+
+    # ---------- Top-N recommendation ----------
+    def topk_from_scores(self, scores: np.ndarray, k: int = 10) -> np.ndarray:
+        """Get top - k item indices from score vector."""
+        valid_scores_mask = np.isfinite(scores)
+        if not np.any(valid_scores_mask):
+            return np.array([], dtype=int)
+
+        valid_indices = np.where(valid_scores_mask)[0]
+        valid_scores = scores[valid_scores_mask]
+
+        if len(valid_indices) <= k:
+            return valid_indices[np.argsort(-valid_scores)]
+
+        # Use argpartition for efficiency with large arrays
+        top_k_indices = np.argpartition(-valid_scores, k)[:k]
+        top_k_items = valid_indices[top_k_indices]
+
+        # Return sorted by score (descending)
+        return top_k_items[np.argsort(-scores[top_k_items])]
+
+    def recommend_hybrid(self, user_id: int, alpha: float = 0.6, cf_method: str = "mf", k: int = 10) -> pd.DataFrame:
+        """Generate hybrid recommendations for a user."""
+        scores = self.hybrid_scores(user_id, alpha=alpha, cf_method=cf_method)
+
+        # Fallback to global popularity if no valid scores
+        if scores is None or not np.any(np.isfinite(scores)):
+            if "global_wr" in globals():
+                return self.global_wr.head(k)[["tmdbId", "title", "WR"]].rename(columns={"WR": "score"})
+            return pd.DataFrame(columns=["tmdbId", "title", "score"])
+
+        # Get top-k recommendations
+        top_indices = self.topk_from_scores(scores, k=k)
+        recommendations = []
+
+        for idx in top_indices:
+            tmdb_id = self.iid_map[idx]
+            title = TITLE_BY_ID.get(int(tmdb_id), str(tmdb_id)) if "TITLE_BY_ID" in globals() else str(tmdb_id)
+            score = scores[idx]
+            recommendations.append({"tmdbId": tmdb_id, "title": title, "score": score})
+
+        return pd.DataFrame(recommendations)
+
+    # ---------- Validation and tuning ----------
+    def leave_last_one_out(self, ratings_df: pd.DataFrame) -> tuple:
+        """Split data using leave - last - one - out validation."""
+        ratings_sorted = ratings_df.sort_values(["userId", "timestamp"])
+        last_indices = ratings_sorted.groupby("userId")["timestamp"].idxmax()
+
+        test_set = ratings_sorted.loc[last_indices]
+        train_set = ratings_sorted.drop(last_indices, errors="ignore")
+
+        # Keep only users with sufficient interactions
+        user_counts = ratings_sorted["userId"].value_counts()
+        valid_users = user_counts[user_counts >= 2].index
+        test_set = test_set[test_set["userId"].isin(valid_users)]
+
+        return train_set, test_set
+
+    def tune_alpha(self, ratings_df: pd.DataFrame, cf_method: str = "mf", K: int = 10, alpha_grid: list = None) -> float:
+        """Tune alpha parameter using Recall @ K on validation set."""
+        if alpha_grid is None:
+            alpha_grid = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+
+        train_df, val_df = self.leave_last_one_out(ratings_df)
+        heldout_items = dict(zip(val_df["userId"].astype(int), val_df["tmdbId"].astype(int)))
+
+        best_alpha = 0.5
+        best_recall = 0.0
+        recall_results = []
+
+        for alpha in alpha_grid:
+            hits = 0
+            valid_users = 0
+
+            for user_id, true_item in heldout_items.items():
+                scores = self.hybrid_scores(user_id, alpha=alpha, cf_method=cf_method)
+                if scores is None:
+                    continue
+
+                recommendations = self.topk_from_scores(scores, k=K)
+                if len(recommendations) == 0:
+                    continue
+
+                # Convert CF indices to tmdbIds
+                recommended_items = {int(self.iid_map[idx]) for idx in recommendations}
+                if true_item in recommended_items:
+                    hits += 1
+                valid_users += 1
+
+            recall = hits / max(1, valid_users)
+            recall_results.append(recall)
+
+            if recall > best_recall:
+                best_recall = recall
+                best_alpha = alpha
+
+        print(f"Alpha tuning results:")
+        for alpha, recall in zip(alpha_grid, recall_results):
+            print(f"  α={alpha}: Recall@{K}={recall:.3f}")
+        print(f"Best alpha: {best_alpha} (Recall@{K}={best_recall:.3f})")
+
+        return best_alpha
