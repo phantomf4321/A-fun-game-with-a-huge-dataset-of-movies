@@ -21,6 +21,8 @@ class Baseline():
             .set_index("tmdbId")["genres"]
         )
 
+
+
     def top_10_globally_popular_movies(self):
         # --- 2) IMDb WR global baseline ---
         # Global C = weighted mean of all ratings

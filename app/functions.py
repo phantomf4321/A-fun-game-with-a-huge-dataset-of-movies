@@ -374,6 +374,30 @@ class KNN:
         """ Predict scores for all items for given user."""
         mu, bu, bi, P, Q = self.train_mf(self.R, n_factors=50, n_epochs=15, lr=0.01, reg=0.05)
         scores = mu + bu[user_idx] + bi + P[user_idx, :] @ Q.T
-        seen = R[user_idx, :].nonzero()[1]
+        seen = self.R[user_idx, :].nonzero()[1]
         scores[seen] = -np.inf
         return scores
+
+    # --------------------------
+    # 3) Recommend function
+    # --------------------------
+    def recommend(self, user_id, method="mf", k=10, global_wr):
+        if user_id not in self.uid_inv:
+            # cold-start fallback
+            if "global_wr" in globals():
+                return global_wr.head(k)[["tmdbId", "title", "WR"]].rename(columns={"WR": "score"})
+            return pd.DataFrame(columns=["tmdbId", "title", "score"])
+
+        user_idx = self.uid_inv[user_id]
+        if method == "itemknn":
+            scores = self.item_item_knn(user_idx)
+        elif method == "userknn":
+            scores = self.user_user_knn(user_idx)
+        else:
+            scores = self.mf_scores(user_idx)
+
+        top_idx = np.argpartition(-scores, k)[:k]
+        top_idx = top_idx[np.argsort(-scores[top_idx])]
+        tmdb_ids = [self.iid_map[i] for i in top_idx]
+        titles = [TITLE_BY_ID[int(t)] if "TITLE_BY_ID" in globals() else str(t) for t in tmdb_ids]
+        return pd.DataFrame({"tmdbId": self.tmdb_ids, "title": titles, "score": scores[top_idx]})
