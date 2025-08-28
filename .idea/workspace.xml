@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="01e68086-6c5f-4049-b60e-ed4e5458a7cd" name="Changes" comment="hybrid model" />
+    <list default="true" id="01e68086-6c5f-4049-b60e-ed4e5458a7cd" name="Changes" comment="hybrid model final loop">
+      <change beforePath="$PROJECT_DIR$/app/functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/functions.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -79,15 +81,7 @@
       <workItem from="1756058818558" duration="5462000" />
       <workItem from="1756312426967" duration="75000" />
       <workItem from="1756313418277" duration="8286000" />
-      <workItem from="1756363705596" duration="7947000" />
-    </task>
-    <task id="LOCAL-00075" summary="Task 3 — Content-Based Recommender debugging">
-      <option name="closed" value="true" />
-      <created>1755273778905</created>
-      <option name="number" value="00075" />
-      <option name="presentableId" value="LOCAL-00075" />
-      <option name="project" value="LOCAL" />
-      <updated>1755273778905</updated>
+      <workItem from="1756363705596" duration="8796000" />
     </task>
     <task id="LOCAL-00076" summary="Task 3 — Content-Based Recommender debugging">
       <option name="closed" value="true" />
@@ -473,14 +467,21 @@
       <option name="project" value="LOCAL" />
       <updated>1756371629672</updated>
     </task>
-    <option name="localTasksCounter" value="124" />
+    <task id="LOCAL-00124" summary="hybrid model final loop">
+      <option name="closed" value="true" />
+      <created>1756374797021</created>
+      <option name="number" value="00124" />
+      <option name="presentableId" value="LOCAL-00124" />
+      <option name="project" value="LOCAL" />
+      <updated>1756374797021</updated>
+    </task>
+    <option name="localTasksCounter" value="125" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Task 3 — Content-Based Recommender dimensionality reduction" />
     <MESSAGE value="Task 3 — Content-Based Recommender Build user profiles" />
     <MESSAGE value="Task 3 — Content-Based Recommender Recommend for a user" />
     <MESSAGE value="Task 3 — Content-Based Recommender Natural-language explanations" />
@@ -505,7 +506,19 @@
     <MESSAGE value="base line Recommendator explain_recommendation" />
     <MESSAGE value="KNN" />
     <MESSAGE value="hybrid model" />
-    <option name="LAST_COMMIT_MESSAGE" value="hybrid model" />
+    <MESSAGE value="hybrid model final loop" />
+    <option name="LAST_COMMIT_MESSAGE" value="hybrid model final loop" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/main.py</url>
+          <line>50</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/FinalProject$baseline.coverage" NAME="baseline Coverage Results" MODIFIED="1756318709929" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/models" />

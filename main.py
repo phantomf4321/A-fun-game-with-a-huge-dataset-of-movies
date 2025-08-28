@@ -49,8 +49,9 @@ item_vectors = recom.get_item_vectors()
 iid_map = knn.get_iid_map()
 uid_inv = knn.get_uid_inv()
 R = knn.get_R()
+title_by_id = knn.get_titles()
 
-hybrid = Hybrid(R, r_full, item_vectors, iid_map, uid_inv, global_wr)
+hybrid = Hybrid(R, r_full, item_vectors, iid_map, uid_inv, global_wr, title_by_id)
 
 # Tune alpha parameter
 try:

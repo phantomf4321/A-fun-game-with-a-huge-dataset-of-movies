@@ -10,6 +10,7 @@ from sklearn.preprocessing import MultiLabelBinarizer
 from sklearn.decomposition import TruncatedSVD
 from sklearn.metrics.pairwise import cosine_similarity
 from scipy.sparse import hstack, csr_matrix
+from typing import Dict, List, Set, Optional, Tuple
 class General_Operations:
     def __init__(self):
         self.log = []
@@ -302,6 +303,9 @@ class KNN:
     def get_uid_inv(self):
         return self.uid_inv
 
+    def get_titles(self):
+        return self.titles
+
     def item_item_knn(self, user_idx, k=50):
         """Score all items for a given user with item–item cosine."""
         user_row = self.R[user_idx, :]
@@ -411,19 +415,25 @@ class KNN:
         titles = [TITLE_BY_ID[int(t)] if "TITLE_BY_ID" in globals() else str(t) for t in tmdb_ids]
         return pd.DataFrame({"tmdbId": tmdb_ids, "title": titles, "score": scores[top_idx]})
 
+
 class Hybrid:
-    def __init__(self, R, r_full, item_vectors, iid_map, uid_inv, global_wr):
+    def __init__(self, R, r_full, item_vectors, iid_map, uid_inv, global_wr, title_by_id):
         self.R = R
         self.r_full = r_full
         self.item_vectors = item_vectors
         self.iid_map = iid_map
         self.uid_inv = uid_inv
         self.global_wr = global_wr
-        self.knn = KNN(r_full)
-        print("Hybrid model is called!")
+        self.title_by_id = title_by_id
+        self.knn = KNN(R, r_full)
+        self.n_items = len(iid_map)
+        print("Hybrid model initialized!")
 
     def _normalize_scores(self, x: np.ndarray) -> np.ndarray:
-        """ Min - max normalize per - user over finite scores; keep - inf as -inf."""
+        """Min-max normalize per-user over finite scores; keep -inf as -inf."""
+        if x is None:
+            return np.full(self.n_items, -np.inf, dtype=float)
+
         x = x.astype(float).copy()
         finite_mask = np.isfinite(x)
 
@@ -440,124 +450,122 @@ class Hybrid:
 
         return x
 
-    def _seen_items_for_user(self, user_idx: int) -> set:
+    def _seen_items_for_user(self, user_idx: int) -> Set[int]:
         """Get set of seen item indices for a user."""
         return set(self.R[user_idx, :].nonzero()[1])
 
-    # ---------- Content-based per-user score vector ----------
-    def cb_scores_for_user(self, user_id: int, exclude_seen: bool = True) -> np.ndarray:
-        """Returns CB similarity scores for all items for a given user. Unseen items get - inf if exclude_seen = True."""
-        # Get user ratings
-        user_ratings = self.r_full[self.r_full["userId"] == user_id]
-        if user_ratings.empty:
-            return None
-
-        # Calculate mean-centered adjusted ratings
-        mean_rating = user_ratings["rating"].mean()
-        user_ratings = user_ratings.copy()
-        user_ratings["adjusted_rating"] = user_ratings["rating"] - mean_rating
-
-        # Filter to items with available vectors
-        available_items = set(self.item_vectors.index.astype(int))
-        user_items = user_ratings["tmdbId"].astype(int)
-        valid_mask = user_items.isin(available_items)
-
-        if not valid_mask.any():
-            return None
-
-        valid_items = user_items[valid_mask].values
-        valid_weights = user_ratings.loc[valid_mask.index[valid_mask], "adjusted_rating"].values
-
-        # Aggregate weights for duplicate items
-        item_weights = {}
-        for item_id, weight in zip(valid_items, valid_weights):
-            item_weights[item_id] = item_weights.get(item_id, 0) + weight
-
-        # Filter out items with negligible weights and check if weights sum to zero
-        filtered_items = []
-        filtered_weights = []
-        total_weight = 0.0
-
-        for item_id, weight in item_weights.items():
-            if abs(weight) > 1e-10:
-                filtered_items.append(item_id)
-                filtered_weights.append(weight)
-                total_weight += abs(weight)
-
-        # If all weights are zero or negligible, use uniform weights
-        if total_weight < 1e-10:
-            filtered_items = list(item_weights.keys())
-            filtered_weights = [1.0] * len(filtered_items)  # Uniform weights
-            print(f"User {user_id}: Using uniform weights (adjusted ratings sum to zero)")
-
-        if not filtered_items:
-            return None
-
-        # Get vectors and compute weighted average profile
+    def cb_scores_for_user(self, user_id: int, exclude_seen: bool = True) -> Optional[np.ndarray]:
+        """Content-based similarity scores for all items for a given user."""
         try:
-            item_vectors_subset = self.item_vectors.loc[filtered_items].values
+            # Get user ratings
+            user_ratings = self.r_full[self.r_full["userId"] == user_id]
+            if user_ratings.empty:
+                print(f"User {user_id}: No ratings found")
+                return None
 
-            # Safe weighted average with zero-division protection
-            if np.sum(np.abs(filtered_weights)) < 1e-10:
-                profile = np.mean(item_vectors_subset, axis=0)
-            else:
+            # Calculate mean-centered adjusted ratings
+            mean_rating = user_ratings["rating"].mean()
+            user_ratings = user_ratings.copy()
+            user_ratings["adjusted_rating"] = user_ratings["rating"] - mean_rating
+
+            # Filter to items with available vectors
+            available_items = set(self.item_vectors.index.astype(int))
+            user_items = user_ratings["tmdbId"].astype(int)
+            valid_mask = user_items.isin(available_items)
+
+            if not valid_mask.any():
+                print(f"User {user_id}: No valid items with vectors")
+                return None
+
+            valid_items = user_items[valid_mask].values
+            valid_weights = user_ratings.loc[valid_mask, "adjusted_rating"].values
+
+            # Aggregate weights for duplicate items
+            item_weights = {}
+            for item_id, weight in zip(valid_items, valid_weights):
+                item_weights[item_id] = item_weights.get(item_id, 0) + weight
+
+            # Filter out items with negligible weights
+            filtered_items = []
+            filtered_weights = []
+
+            for item_id, weight in item_weights.items():
+                if abs(weight) > 1e-10:
+                    filtered_items.append(item_id)
+                    filtered_weights.append(weight)
+
+            # Use uniform weights if all weights are negligible
+            if not filtered_items:
+                filtered_items = list(item_weights.keys())
+                filtered_weights = [1.0] * len(filtered_items)
+                print(f"User {user_id}: Using uniform weights")
+
+            # Get vectors and compute weighted average profile
+            try:
+                item_vectors_subset = self.item_vectors.loc[filtered_items].values
                 profile = np.average(item_vectors_subset, axis=0, weights=filtered_weights)
+            except:
+                profile = np.mean(item_vectors_subset, axis=0)
 
-        except (KeyError, ValueError) as e:
-            print(f"Error processing user {user_id}: {e}")
+            # Compute similarities to all items
+            all_item_vectors = self.item_vectors.values
+            similarities = cosine_similarity([profile], all_item_vectors)[0]
+
+            # Map similarities to CF item ordering
+            scores = np.full(self.n_items, -np.inf, dtype=float)
+            vector_idx_map = {int(mid): idx for idx, mid in enumerate(self.item_vectors.index.astype(int))}
+
+            for cf_idx in range(self.n_items):
+                tmdb_id = int(self.iid_map[cf_idx])
+                if tmdb_id in vector_idx_map:
+                    vec_idx = vector_idx_map[tmdb_id]
+                    scores[cf_idx] = similarities[vec_idx]
+
+            # Exclude already seen items if requested
+            if exclude_seen and user_id in self.uid_inv:
+                user_idx = self.uid_inv[user_id]
+                seen_indices = self._seen_items_for_user(user_idx)
+                scores[list(seen_indices)] = -np.inf
+
+            return scores
+
+        except Exception as e:
+            print(f"Error in CB for user {user_id}: {e}")
             return None
 
-        # Compute similarities to all items
-        all_item_vectors = self.item_vectors.values
-        similarities = cosine_similarity([profile], all_item_vectors)[0]
-
-        # Map similarities to CF item ordering
-        n_items = len(self.iid_map)
-        scores = np.full(n_items, -np.inf, dtype=float)
-
-        # Create mapping from tmdbId to item_vectors index
-        vector_idx_map = {int(mid): idx for idx, mid in enumerate(self.item_vectors.index.astype(int))}
-
-        for cf_idx in range(n_items):
-            tmdb_id = int(self.iid_map[cf_idx])
-            if tmdb_id in vector_idx_map:
-                scores[cf_idx] = similarities[vector_idx_map[tmdb_id]]
-
-        # Exclude already seen items if requested
-        if exclude_seen and user_id in self.uid_inv:
-            user_idx = self.uid_inv[user_id]
-            seen_indices = self._seen_items_for_user(user_idx)
-            scores[list(seen_indices)] = -np.inf
-
-        return scores
-
-    # ---------- CF score router ----------
-    def cf_scores_for_user(self, user_id: int, method: str = "mf") -> np.ndarray:
+    def cf_scores_for_user(self, user_id: int, method: str = "mf") -> Optional[np.ndarray]:
         """Get collaborative filtering scores for a user."""
         if user_id not in self.uid_inv:
+            print(f"User {user_id} not in user index map")
             return None
 
         user_idx = self.uid_inv[user_id]
 
-        if method == "itemknn":
-            return self.knn.item_item_knn(user_idx)
-        elif method == "userknn":
-            return self.knn.user_user_knn(user_idx)
-        else:
-            return self.knn.mf_scores(user_idx)
+        try:
+            if method == "itemknn":
+                return self.knn.item_item_knn(user_idx)
+            elif method == "userknn":
+                return self.knn.user_user_knn(user_idx)
+            else:
+                return self.knn.mf_scores(user_idx)
+        except Exception as e:
+            print(f"Error in CF for user {user_id}: {e}")
+            return None
 
-    # ---------- Hybrid scorer ----------
-    def hybrid_scores(self, user_id: int, alpha: float = 0.5, cf_method: str = "mf") -> np.ndarray:
+    def hybrid_scores(self, user_id: int, alpha: float = 0.5, cf_method: str = "mf") -> Optional[np.ndarray]:
         """Combine CB and CF scores using weighted average."""
         cb_scores = self.cb_scores_for_user(user_id)
         cf_scores = self.cf_scores_for_user(user_id, method=cf_method)
 
         # Fallback strategies
         if cb_scores is None and cf_scores is None:
+            print(f"No scores available for user {user_id}")
             return None
         if cb_scores is None:
+            print(f"Using CF only for user {user_id}")
             return self._normalize_scores(cf_scores)
         if cf_scores is None:
+            print(f"Using CB only for user {user_id}")
             return self._normalize_scores(cb_scores)
 
         # Normalize both score vectors
@@ -576,9 +584,11 @@ class Hybrid:
 
         return blended_scores
 
-    # ---------- Top-N recommendation ----------
     def topk_from_scores(self, scores: np.ndarray, k: int = 10) -> np.ndarray:
-        """Get top - k item indices from score vector."""
+        """Get top-k item indices from score vector."""
+        if scores is None:
+            return np.array([], dtype=int)
+
         valid_scores_mask = np.isfinite(scores)
         if not np.any(valid_scores_mask):
             return np.array([], dtype=int)
@@ -589,22 +599,22 @@ class Hybrid:
         if len(valid_indices) <= k:
             return valid_indices[np.argsort(-valid_scores)]
 
-        # Use argpartition for efficiency with large arrays
+        # Use argpartition for efficiency
         top_k_indices = np.argpartition(-valid_scores, k)[:k]
         top_k_items = valid_indices[top_k_indices]
 
         # Return sorted by score (descending)
         return top_k_items[np.argsort(-scores[top_k_items])]
 
-    def recommend_hybrid(self, user_id: int, alpha: float = 0.6, cf_method: str = "mf", k: int = 10) -> pd.DataFrame:
+    def recommend_hybrid(self, user_id: int, alpha: float = 0.6,
+                         cf_method: str = "mf", k: int = 10) -> pd.DataFrame:
         """Generate hybrid recommendations for a user."""
         scores = self.hybrid_scores(user_id, alpha=alpha, cf_method=cf_method)
 
         # Fallback to global popularity if no valid scores
         if scores is None or not np.any(np.isfinite(scores)):
-            if "global_wr" in globals():
-                return self.global_wr.head(k)[["tmdbId", "title", "WR"]].rename(columns={"WR": "score"})
-            return pd.DataFrame(columns=["tmdbId", "title", "score"])
+            print(f"Falling back to global popularity for user {user_id}")
+            return self.global_wr.head(k)[["tmdbId", "title", "WR"]].rename(columns={"WR": "score"})
 
         # Get top-k recommendations
         top_indices = self.topk_from_scores(scores, k=k)
@@ -612,20 +622,19 @@ class Hybrid:
 
         for idx in top_indices:
             tmdb_id = self.iid_map[idx]
-            title = TITLE_BY_ID.get(int(tmdb_id), str(tmdb_id)) if "TITLE_BY_ID" in globals() else str(tmdb_id)
+            title = self.title_by_id.get(int(tmdb_id), f"Movie_{tmdb_id}")
             score = scores[idx]
             recommendations.append({"tmdbId": tmdb_id, "title": title, "score": score})
 
         return pd.DataFrame(recommendations)
 
-    # ---------- Validation and tuning ----------
-    def leave_last_one_out(self, ratings_df: pd.DataFrame) -> tuple:
-        """Split data using leave - last - one - out validation."""
+    def leave_last_one_out(self, ratings_df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
+        """Split data using leave-last-one-out validation."""
         ratings_sorted = ratings_df.sort_values(["userId", "timestamp"])
         last_indices = ratings_sorted.groupby("userId")["timestamp"].idxmax()
 
         test_set = ratings_sorted.loc[last_indices]
-        train_set = ratings_sorted.drop(last_indices, errors="ignore")
+        train_set = ratings_sorted.drop(last_indices)
 
         # Keep only users with sufficient interactions
         user_counts = ratings_sorted["userId"].value_counts()
@@ -634,10 +643,11 @@ class Hybrid:
 
         return train_set, test_set
 
-    def tune_alpha(self, ratings_df: pd.DataFrame, cf_method: str = "mf", K: int = 10, alpha_grid: list = None) -> float:
+    def tune_alpha(self, ratings_df: pd.DataFrame, cf_method: str = "mf",
+                   K: int = 10, alpha_grid: List[float] = None) -> float:
         """Tune alpha parameter using Recall @ K on validation set."""
         if alpha_grid is None:
-            alpha_grid = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+            alpha_grid = [0.0, 0.25, 0.5, 0.6, 0.7, 0.75, 1.0]
 
         train_df, val_df = self.leave_last_one_out(ratings_df)
         heldout_items = dict(zip(val_df["userId"].astype(int), val_df["tmdbId"].astype(int)))
@@ -672,9 +682,10 @@ class Hybrid:
                 best_recall = recall
                 best_alpha = alpha
 
-        print(f"Alpha tuning results:")
+        print("Alpha tuning results:")
         for alpha, recall in zip(alpha_grid, recall_results):
             print(f"  α={alpha}: Recall@{K}={recall:.3f}")
         print(f"Best alpha: {best_alpha} (Recall@{K}={best_recall:.3f})")
 
         return best_alpha
+
