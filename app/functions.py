@@ -412,8 +412,8 @@ class KNN:
         top_idx = np.argpartition(-scores, k)[:k]
         top_idx = top_idx[np.argsort(-scores[top_idx])]
         tmdb_ids = [self.iid_map[i] for i in top_idx]
-        titles = [TITLE_BY_ID[int(t)] if "TITLE_BY_ID" in globals() else str(t) for t in tmdb_ids]
-        return pd.DataFrame({"tmdbId": tmdb_ids, "title": titles, "score": scores[top_idx]})
+        self.titles = [TITLE_BY_ID[int(t)] if "TITLE_BY_ID" in globals() else str(t) for t in tmdb_ids]
+        return pd.DataFrame({"tmdbId": tmdb_ids, "title": self.titles, "score": scores[top_idx]})
 
 
 class Hybrid:
