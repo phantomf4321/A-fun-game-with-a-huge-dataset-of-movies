@@ -70,7 +70,7 @@ try:
     recommendations = hybrid.recommend_hybrid(user_id, alpha=best_alpha, cf_method="mf", k=10)
     print(recommendations)
 except Exception as e:
-    print(f"Error generating recommendations: {e}")"
+    print(f"Error generating recommendations: {e}")
 
 """
 # ---------- 0) Expect these globals from Tasks 3–4 ----------
