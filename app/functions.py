@@ -266,3 +266,9 @@ class Recommendator:
             self.explanation.append(f"features cast members {', '.join(sorted(cast_overlap))}")
 
         return " and ".join(self.explanation) if self.explanation else "matches your taste profile"
+
+class KNN:
+    def __init__(self, r_full):
+        self.r_full = r_full
+        print("KNN is called!")
+
