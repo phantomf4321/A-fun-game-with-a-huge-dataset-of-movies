@@ -4,8 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="01e68086-6c5f-4049-b60e-ed4e5458a7cd" name="Changes" comment="base line Recommendator explain_recommendation">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="01e68086-6c5f-4049-b60e-ed4e5458a7cd" name="Changes" comment="KNN">
+      <change beforePath="$PROJECT_DIR$/app/functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/functions.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -81,15 +81,7 @@
       <workItem from="1756058818558" duration="5462000" />
       <workItem from="1756312426967" duration="75000" />
       <workItem from="1756313418277" duration="8286000" />
-      <workItem from="1756363705596" duration="346000" />
-    </task>
-    <task id="LOCAL-00063" summary="Baseline Per-genre WR">
-      <option name="closed" value="true" />
-      <created>1755186779457</created>
-      <option name="number" value="00063" />
-      <option name="presentableId" value="LOCAL-00063" />
-      <option name="project" value="LOCAL" />
-      <updated>1755186779457</updated>
+      <workItem from="1756363705596" duration="896000" />
     </task>
     <task id="LOCAL-00064" summary="Baseline Per-genre WR">
       <option name="closed" value="true" />
@@ -475,14 +467,21 @@
       <option name="project" value="LOCAL" />
       <updated>1756321643650</updated>
     </task>
-    <option name="localTasksCounter" value="112" />
+    <task id="LOCAL-00112" summary="KNN">
+      <option name="closed" value="true" />
+      <created>1756364595192</created>
+      <option name="number" value="00112" />
+      <option name="presentableId" value="LOCAL-00112" />
+      <option name="project" value="LOCAL" />
+      <updated>1756364595193</updated>
+    </task>
+    <option name="localTasksCounter" value="113" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Task 3 — Content-Based Recommender init" />
     <MESSAGE value="Task 3 — Content-Based Recommender Prepare item feature matrix" />
     <MESSAGE value="Task 3 — Content-Based Recommender dimensionality reduction" />
     <MESSAGE value="Task 3 — Content-Based Recommender Build user profiles" />
@@ -507,7 +506,8 @@
     <MESSAGE value="base line Recommendator build_user_profile" />
     <MESSAGE value="base line Recommendator recommend_content" />
     <MESSAGE value="base line Recommendator explain_recommendation" />
-    <option name="LAST_COMMIT_MESSAGE" value="base line Recommendator explain_recommendation" />
+    <MESSAGE value="KNN" />
+    <option name="LAST_COMMIT_MESSAGE" value="KNN" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/FinalProject$baseline.coverage" NAME="baseline Coverage Results" MODIFIED="1756318709929" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/models" />

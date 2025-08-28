@@ -35,81 +35,13 @@ for _, row in recommendations.iterrows():
 # --------------------------
 # 0) Build user-item matrix
 # --------------------------
-# map ids to indices
-user_ids = r_full["userId"].astype("category")
-item_ids = r_full["tmdbId"].astype("category")
 
-uid_map = dict(enumerate(user_ids.cat.categories))
-iid_map = dict(enumerate(item_ids.cat.categories))
-uid_inv = {v: k for k, v in uid_map.items()}
-iid_inv = {v: k for k, v in iid_map.items()}
-
-n_users = len(uid_map)
-n_items = len(iid_map)
-
-# sparse user-item rating matrix
-R = csr_matrix(
-    (r_full["rating"].values,
-     (user_ids.cat.codes.values, item_ids.cat.codes.values)),
-    shape=(n_users, n_items)
-)
-
-# mean ratings per user (for Pearson)
-user_means = np.array(R.sum(axis=1)).ravel() / (R != 0).sum(axis=1).A1
 
 # --------------------------
 # 1) Neighborhood CF
 # --------------------------
 
-def item_item_knn(user_idx, k=50):
-    ""Score all items for a given user with item–item cosine.""
-    user_row = R[user_idx, :]
-    seen_items = user_row.nonzero()[1]
-    if len(seen_items) == 0:
-        return None
 
-    # cosine sim between seen items and all items
-    sims = cosine_similarity(R[:, seen_items].T, R.T)  # shape (#seen, n_items)
-    ratings_seen = user_row[:, seen_items].toarray().ravel()
-
-    # weighted sum
-    scores = ratings_seen @ sims
-    norms = np.abs(sims).sum(axis=0)
-    scores = scores / np.maximum(norms, 1e-8)
-
-    # zero out seen items
-    scores[seen_items] = -np.inf
-    return scores
-
-def user_user_knn(user_idx, k=50):
-    ""Score items for a given user with user–user Pearson similarity.""
-    # convert to dense array (safe if dataset <10k users/items; otherwise we can optimize)
-    R_dense = R.toarray().astype(float)
-
-    # mean-center (ignoring zeros)
-    mask = (R_dense != 0)
-    user_means = np.divide(
-        R_dense.sum(axis=1), mask.sum(axis=1), out=np.zeros_like(R_dense.sum(axis=1)), where=mask.sum(axis=1)!=0
-    )
-    R_centered = (R_dense - user_means[:, None]) * mask  # subtract mean only where ratings exist
-
-    # similarities
-    target = R_centered[user_idx, :].reshape(1, -1)
-    sims = cosine_similarity(target, R_centered)[0]
-    sims[user_idx] = 0  # ignore self
-
-    # weighted sum of neighbor ratings
-    scores = sims @ R_centered
-    norms = np.abs(sims).sum()
-    scores = scores / np.maximum(norms, 1e-8)
-
-    # add back mean for this user
-    scores += user_means[user_idx]
-
-    # filter out seen items
-    seen_items = R[user_idx, :].nonzero()[1]
-    scores[seen_items] = -np.inf
-    return scores
 
 
 # --------------------------

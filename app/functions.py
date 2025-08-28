@@ -271,4 +271,109 @@ class KNN:
     def __init__(self, r_full):
         self.r_full = r_full
         print("KNN is called!")
+        # map ids to indices
+        self.user_ids = self.r_full["userId"].astype("category")
+        self.item_ids = self.r_full["tmdbId"].astype("category")
 
+        self.uid_map = dict(enumerate(self.user_ids.cat.categories))
+        self.iid_map = dict(enumerate(self.item_ids.cat.categories))
+        self.uid_inv = {v: k for k, v in self.uid_map.items()}
+        self.iid_inv = {v: k for k, v in self.iid_map.items()}
+
+        self.n_users = len(self.uid_map)
+        self.n_items = len(self.iid_map)
+
+        # sparse user-item rating matrix
+        self.R = self.csr_matrix(
+            (self.r_full["rating"].values,
+             (self.user_ids.cat.codes.values, self.item_ids.cat.codes.values)),
+            shape=(self.n_users, self.n_items)
+        )
+
+        # mean ratings per user (for Pearson)
+        self.user_means = np.array(self.R.sum(axis=1)).ravel() / (self.R != 0).sum(axis=1).A1
+
+    def item_item_knn(self, user_idx, k=50):
+        """Score all items for a given user with item–item cosine."""
+        user_row = self.R[user_idx, :]
+        seen_items = user_row.nonzero()[1]
+        if len(seen_items) == 0:
+            return None
+
+        # cosine sim between seen items and all items
+        sims = cosine_similarity(self.R[:, seen_items].T, self.R.T)  # shape (#seen, n_items)
+        ratings_seen = user_row[:, seen_items].toarray().ravel()
+
+        # weighted sum
+        scores = ratings_seen @ sims
+        norms = np.abs(sims).sum(axis=0)
+        scores = scores / np.maximum(norms, 1e-8)
+
+        # zero out seen items
+        scores[seen_items] = -np.inf
+        return scores
+
+    def user_user_knn(self, user_idx, k=50):
+        """Score items for a given user with user–user Pearson similarity."""
+        # convert to dense array (safe if dataset <10k users/items; otherwise we can optimize)
+        R_dense = self.R.toarray().astype(float)
+
+        # mean-center (ignoring zeros)
+        mask = (R_dense != 0)
+        user_means = np.divide(
+            R_dense.sum(axis=1), mask.sum(axis=1), out=np.zeros_like(R_dense.sum(axis=1)), where=mask.sum(axis=1) != 0
+        )
+        R_centered = (R_dense - user_means[:, None]) * mask  # subtract mean only where ratings exist
+
+        # similarities
+        target = R_centered[user_idx, :].reshape(1, -1)
+        sims = cosine_similarity(target, R_centered)[0]
+        sims[user_idx] = 0  # ignore self
+
+        # weighted sum of neighbor ratings
+        scores = sims @ R_centered
+        norms = np.abs(sims).sum()
+        scores = scores / np.maximum(norms, 1e-8)
+
+        # add back mean for this user
+        scores += user_means[user_idx]
+
+        # filter out seen items
+        seen_items = self.R[user_idx, :].nonzero()[1]
+        scores[seen_items] = -np.inf
+        return scores
+
+    # --------------------------
+    # 2) Matrix Factorization (Biased SVD via SGD)
+    # --------------------------
+    def train_mf(self, n_factors=50, n_epochs=20, lr=0.005, reg=0.02, seed=42):
+        rng = np.random.default_rng(seed)
+        n_users, n_items = self.R.shape
+        # latent factors
+        P = 0.1 * rng.standard_normal((n_users, n_factors))
+        Q = 0.1 * rng.standard_normal((n_items, n_factors))
+        bu = np.zeros(n_users)
+        bi = np.zeros(n_items)
+        mu = R[R.nonzero()].mean()  # global mean
+
+        rows, cols = R.nonzero()
+        for epoch in range(n_epochs):
+            for u, i in zip(rows, cols):
+                r_ui = R[u, i]
+                pred = mu + bu[u] + bi[i] + P[u, :] @ Q[i, :].T
+                err = r_ui - pred
+                # update biases
+                bu[u] += lr * (err - reg * bu[u])
+                bi[i] += lr * (err - reg * bi[i])
+                # update latent factors
+                P[u, :] += lr * (err * Q[i, :] - reg * P[u, :])
+                Q[i, :] += lr * (err * P[u, :] - reg * Q[i, :])
+        return mu, bu, bi, P, Q
+
+    def mf_scores(self, user_idx):
+        """ Predict scores for all items for given user."""
+        mu, bu, bi, P, Q = self.train_mf(self.R, n_factors=50, n_epochs=15, lr=0.01, reg=0.05)
+        scores = mu + bu[user_idx] + bi + P[user_idx, :] @ Q.T
+        seen = R[user_idx, :].nonzero()[1]
+        scores[seen] = -np.inf
+        return scores
