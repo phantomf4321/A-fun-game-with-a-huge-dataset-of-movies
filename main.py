@@ -15,7 +15,7 @@ from app.functions import Recommendator, KNN
 eda = EDA()
 r_full = eda.get_r_full()
 baseline = Baseline(r_full)
-baseline.final_results()
+baseline_res = baseline.final_results()
 
 meta_subset = eda.meta_clean.copy()
 recom = Recommendator(meta_subset)
@@ -31,7 +31,7 @@ for _, row in recommendations.iterrows():
     print(f"{row['title']}  —  {expl}")
 
 knn = KNN(r_full)
-global_wr = baseline.get_global_wr()
+global_wr = baseline_res["global_wr"]
 print("\nTop-10 MF recommendations:")
 print(knn.recommend(user_id, "mf", 10, global_wr))
 
