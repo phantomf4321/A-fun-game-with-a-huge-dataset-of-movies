@@ -148,9 +148,10 @@ class Plot:
 
 
 class Recommendator:
-    def __init__(self, meta_subset):
+    def __init__(self, meta_subset, global_wr):
         print("Recommendator is constructed")
         self.meta_subset = meta_subset
+        self.global_wr = global_wr
 
     def get_item_vectors(self):
         return self.item_vectors
