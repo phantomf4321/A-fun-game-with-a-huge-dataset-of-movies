@@ -353,12 +353,12 @@ class KNN:
         Q = 0.1 * rng.standard_normal((n_items, n_factors))
         bu = np.zeros(n_users)
         bi = np.zeros(n_items)
-        mu = R[R.nonzero()].mean()  # global mean
+        mu = self.R[self.R.nonzero()].mean()  # global mean
 
-        rows, cols = R.nonzero()
+        rows, cols = self.R.nonzero()
         for epoch in range(n_epochs):
             for u, i in zip(rows, cols):
-                r_ui = R[u, i]
+                r_ui = self.R[u, i]
                 pred = mu + bu[u] + bi[i] + P[u, :] @ Q[i, :].T
                 err = r_ui - pred
                 # update biases
@@ -371,7 +371,7 @@ class KNN:
 
     def mf_scores(self, user_idx):
         """ Predict scores for all items for given user."""
-        mu, bu, bi, P, Q = self.train_mf(self.R, 20, 0.005, 0.02, 42)
+        mu, bu, bi, P, Q = self.train_mf(50, 20, 0.005, 0.02, 42)
         scores = mu + bu[user_idx] + bi + P[user_idx, :] @ Q.T
         seen = self.R[user_idx, :].nonzero()[1]
         scores[seen] = -np.inf
@@ -399,4 +399,4 @@ class KNN:
         top_idx = top_idx[np.argsort(-scores[top_idx])]
         tmdb_ids = [self.iid_map[i] for i in top_idx]
         titles = [TITLE_BY_ID[int(t)] if "TITLE_BY_ID" in globals() else str(t) for t in tmdb_ids]
-        return pd.DataFrame({"tmdbId": self.tmdb_ids, "title": titles, "score": scores[top_idx]})
+        return pd.DataFrame({"tmdbId": tmdb_ids, "title": titles, "score": scores[top_idx]})
