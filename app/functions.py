@@ -425,7 +425,7 @@ class Hybrid:
         self.uid_inv = uid_inv
         self.global_wr = global_wr
         self.title_by_id = title_by_id
-        self.knn = KNN(R, r_full)
+        self.knn = KNN(r_full)
         self.n_items = len(iid_map)
         print("Hybrid model initialized!")
 
