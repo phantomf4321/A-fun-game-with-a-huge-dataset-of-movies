@@ -3,7 +3,7 @@ import pandas as pd
 
 from collections import defaultdict
 
-from scipy.sparse import csr_matrix
+
 from sklearn.metrics.pairwise import cosine_similarity
 from collections import defaultdict
 
@@ -24,12 +24,13 @@ recom.dimensionality_reduction()
 
 user_id = 123  # example user
 recommendations = recom.recommend_content(user_id, r_full, recom.item_vectors, top_n=10)
-knn = KNN(r_full)
+
 print(f"\nTop 10 recommendations for user {user_id}:")
 for _, row in recommendations.iterrows():
     expl = recom.explain_recommendation(row["tmdbId"], user_id, r_full, meta_subset)
     print(f"{row['title']}  —  {expl}")
 
+knn = KNN(r_full)
 global_wr = baseline.get_global_wr()
 print("\nTop-10 MF recommendations:")
 print(knn.recommend(user_id, "mf", 10, global_wr))

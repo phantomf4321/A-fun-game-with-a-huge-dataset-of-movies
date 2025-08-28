@@ -9,8 +9,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import MultiLabelBinarizer
 from sklearn.decomposition import TruncatedSVD
 from sklearn.metrics.pairwise import cosine_similarity
-from scipy.sparse import hstack
-
+from scipy.sparse import hstack, csr_matrix
 class General_Operations:
     def __init__(self):
         self.log = []
@@ -284,7 +283,7 @@ class KNN:
         self.n_items = len(self.iid_map)
 
         # sparse user-item rating matrix
-        self.R = self.csr_matrix(
+        self.R = csr_matrix(
             (self.r_full["rating"].values,
              (self.user_ids.cat.codes.values, self.item_ids.cat.codes.values)),
             shape=(self.n_users, self.n_items)
