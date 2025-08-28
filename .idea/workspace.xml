@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="01e68086-6c5f-4049-b60e-ed4e5458a7cd" name="Changes" comment="KNN">
-      <change beforePath="$PROJECT_DIR$/app/functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/functions.py" afterDir="false" />
-    </list>
+    <list default="true" id="01e68086-6c5f-4049-b60e-ed4e5458a7cd" name="Changes" comment="hybrid model" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -81,95 +79,7 @@
       <workItem from="1756058818558" duration="5462000" />
       <workItem from="1756312426967" duration="75000" />
       <workItem from="1756313418277" duration="8286000" />
-      <workItem from="1756363705596" duration="896000" />
-    </task>
-    <task id="LOCAL-00064" summary="Baseline Per-genre WR">
-      <option name="closed" value="true" />
-      <created>1755186928822</created>
-      <option name="number" value="00064" />
-      <option name="presentableId" value="LOCAL-00064" />
-      <option name="project" value="LOCAL" />
-      <updated>1755186928823</updated>
-    </task>
-    <task id="LOCAL-00065" summary="Task 3 — Content-Based Recommender init">
-      <option name="closed" value="true" />
-      <created>1755272618782</created>
-      <option name="number" value="00065" />
-      <option name="presentableId" value="LOCAL-00065" />
-      <option name="project" value="LOCAL" />
-      <updated>1755272618783</updated>
-    </task>
-    <task id="LOCAL-00066" summary="Task 3 — Content-Based Recommender Prepare item feature matrix">
-      <option name="closed" value="true" />
-      <created>1755272678135</created>
-      <option name="number" value="00066" />
-      <option name="presentableId" value="LOCAL-00066" />
-      <option name="project" value="LOCAL" />
-      <updated>1755272678136</updated>
-    </task>
-    <task id="LOCAL-00067" summary="Task 3 — Content-Based Recommender dimensionality reduction">
-      <option name="closed" value="true" />
-      <created>1755272707095</created>
-      <option name="number" value="00067" />
-      <option name="presentableId" value="LOCAL-00067" />
-      <option name="project" value="LOCAL" />
-      <updated>1755272707095</updated>
-    </task>
-    <task id="LOCAL-00068" summary="Task 3 — Content-Based Recommender Build user profiles">
-      <option name="closed" value="true" />
-      <created>1755272755539</created>
-      <option name="number" value="00068" />
-      <option name="presentableId" value="LOCAL-00068" />
-      <option name="project" value="LOCAL" />
-      <updated>1755272755539</updated>
-    </task>
-    <task id="LOCAL-00069" summary="Task 3 — Content-Based Recommender Recommend for a user">
-      <option name="closed" value="true" />
-      <created>1755272792686</created>
-      <option name="number" value="00069" />
-      <option name="presentableId" value="LOCAL-00069" />
-      <option name="project" value="LOCAL" />
-      <updated>1755272792686</updated>
-    </task>
-    <task id="LOCAL-00070" summary="Task 3 — Content-Based Recommender Natural-language explanations">
-      <option name="closed" value="true" />
-      <created>1755272831817</created>
-      <option name="number" value="00070" />
-      <option name="presentableId" value="LOCAL-00070" />
-      <option name="project" value="LOCAL" />
-      <updated>1755272831817</updated>
-    </task>
-    <task id="LOCAL-00071" summary="Task 3 — Content-Based Recommender Example usage">
-      <option name="closed" value="true" />
-      <created>1755272861718</created>
-      <option name="number" value="00071" />
-      <option name="presentableId" value="LOCAL-00071" />
-      <option name="project" value="LOCAL" />
-      <updated>1755272861718</updated>
-    </task>
-    <task id="LOCAL-00072" summary="Task 3 — Content-Based Recommender">
-      <option name="closed" value="true" />
-      <created>1755273078534</created>
-      <option name="number" value="00072" />
-      <option name="presentableId" value="LOCAL-00072" />
-      <option name="project" value="LOCAL" />
-      <updated>1755273078534</updated>
-    </task>
-    <task id="LOCAL-00073" summary="Task 3 — Content-Based Recommender">
-      <option name="closed" value="true" />
-      <created>1755273498401</created>
-      <option name="number" value="00073" />
-      <option name="presentableId" value="LOCAL-00073" />
-      <option name="project" value="LOCAL" />
-      <updated>1755273498401</updated>
-    </task>
-    <task id="LOCAL-00074" summary="Task 3 — Content-Based Recommender debuging">
-      <option name="closed" value="true" />
-      <created>1755273649891</created>
-      <option name="number" value="00074" />
-      <option name="presentableId" value="LOCAL-00074" />
-      <option name="project" value="LOCAL" />
-      <updated>1755273649891</updated>
+      <workItem from="1756363705596" duration="7947000" />
     </task>
     <task id="LOCAL-00075" summary="Task 3 — Content-Based Recommender debugging">
       <option name="closed" value="true" />
@@ -475,14 +385,101 @@
       <option name="project" value="LOCAL" />
       <updated>1756364595193</updated>
     </task>
-    <option name="localTasksCounter" value="113" />
+    <task id="LOCAL-00113" summary="KNN">
+      <option name="closed" value="true" />
+      <created>1756365267661</created>
+      <option name="number" value="00113" />
+      <option name="presentableId" value="LOCAL-00113" />
+      <option name="project" value="LOCAL" />
+      <updated>1756365267661</updated>
+    </task>
+    <task id="LOCAL-00114" summary="KNN">
+      <option name="closed" value="true" />
+      <created>1756365818278</created>
+      <option name="number" value="00114" />
+      <option name="presentableId" value="LOCAL-00114" />
+      <option name="project" value="LOCAL" />
+      <updated>1756365818278</updated>
+    </task>
+    <task id="LOCAL-00115" summary="KNN">
+      <option name="closed" value="true" />
+      <created>1756366134877</created>
+      <option name="number" value="00115" />
+      <option name="presentableId" value="LOCAL-00115" />
+      <option name="project" value="LOCAL" />
+      <updated>1756366134877</updated>
+    </task>
+    <task id="LOCAL-00116" summary="KNN">
+      <option name="closed" value="true" />
+      <created>1756366444003</created>
+      <option name="number" value="00116" />
+      <option name="presentableId" value="LOCAL-00116" />
+      <option name="project" value="LOCAL" />
+      <updated>1756366444003</updated>
+    </task>
+    <task id="LOCAL-00117" summary="KNN">
+      <option name="closed" value="true" />
+      <created>1756366760636</created>
+      <option name="number" value="00117" />
+      <option name="presentableId" value="LOCAL-00117" />
+      <option name="project" value="LOCAL" />
+      <updated>1756366760636</updated>
+    </task>
+    <task id="LOCAL-00118" summary="KNN">
+      <option name="closed" value="true" />
+      <created>1756366808918</created>
+      <option name="number" value="00118" />
+      <option name="presentableId" value="LOCAL-00118" />
+      <option name="project" value="LOCAL" />
+      <updated>1756366808918</updated>
+    </task>
+    <task id="LOCAL-00119" summary="KNN">
+      <option name="closed" value="true" />
+      <created>1756367123203</created>
+      <option name="number" value="00119" />
+      <option name="presentableId" value="LOCAL-00119" />
+      <option name="project" value="LOCAL" />
+      <updated>1756367123203</updated>
+    </task>
+    <task id="LOCAL-00120" summary="hybrid model">
+      <option name="closed" value="true" />
+      <created>1756369961714</created>
+      <option name="number" value="00120" />
+      <option name="presentableId" value="LOCAL-00120" />
+      <option name="project" value="LOCAL" />
+      <updated>1756369961714</updated>
+    </task>
+    <task id="LOCAL-00121" summary="hybrid model">
+      <option name="closed" value="true" />
+      <created>1756371353947</created>
+      <option name="number" value="00121" />
+      <option name="presentableId" value="LOCAL-00121" />
+      <option name="project" value="LOCAL" />
+      <updated>1756371353947</updated>
+    </task>
+    <task id="LOCAL-00122" summary="hybrid model">
+      <option name="closed" value="true" />
+      <created>1756371619910</created>
+      <option name="number" value="00122" />
+      <option name="presentableId" value="LOCAL-00122" />
+      <option name="project" value="LOCAL" />
+      <updated>1756371619910</updated>
+    </task>
+    <task id="LOCAL-00123" summary="hybrid model">
+      <option name="closed" value="true" />
+      <created>1756371629672</created>
+      <option name="number" value="00123" />
+      <option name="presentableId" value="LOCAL-00123" />
+      <option name="project" value="LOCAL" />
+      <updated>1756371629672</updated>
+    </task>
+    <option name="localTasksCounter" value="124" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Task 3 — Content-Based Recommender Prepare item feature matrix" />
     <MESSAGE value="Task 3 — Content-Based Recommender dimensionality reduction" />
     <MESSAGE value="Task 3 — Content-Based Recommender Build user profiles" />
     <MESSAGE value="Task 3 — Content-Based Recommender Recommend for a user" />
@@ -507,11 +504,12 @@
     <MESSAGE value="base line Recommendator recommend_content" />
     <MESSAGE value="base line Recommendator explain_recommendation" />
     <MESSAGE value="KNN" />
-    <option name="LAST_COMMIT_MESSAGE" value="KNN" />
+    <MESSAGE value="hybrid model" />
+    <option name="LAST_COMMIT_MESSAGE" value="hybrid model" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/FinalProject$baseline.coverage" NAME="baseline Coverage Results" MODIFIED="1756318709929" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/models" />
     <SUITE FILE_PATH="coverage/FinalProject$app.coverage" NAME="app Coverage Results" MODIFIED="1754756132096" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/FinalProject$main.coverage" NAME="main Coverage Results" MODIFIED="1756321638316" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/FinalProject$main.coverage" NAME="main Coverage Results" MODIFIED="1756372724327" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
