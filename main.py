@@ -30,15 +30,15 @@ for _, row in recommendations.iterrows():
     expl = recom.explain_recommendation(row["tmdbId"], user_id, r_full, meta_subset)
     print(f"{row['title']}  —  {expl}")
 
-
+global_wr = baseline.get_global_wr()
 print("\nTop-10 MF recommendations:")
-print(recommend(user_id, method="mf", k=10))
+print(knn.recommend(user_id, "mf", 10, global_wr))
 
 print("\nTop-10 Item–Item recommendations:")
-print(recommend(user_id, method="itemknn", k=10))
+print(knn.recommend(user_id, "itemknn", 10, global_wr))
 
 print("\nTop-10 User–User recommendations:")
-print(recommend(user_id, method="userknn", k=10))
+print(knn.recommend(user_id, "userknn", 10, global_wr))
 
 """
 # ---------- 0) Expect these globals from Tasks 3–4 ----------

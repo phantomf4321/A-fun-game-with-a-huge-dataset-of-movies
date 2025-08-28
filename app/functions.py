@@ -381,7 +381,7 @@ class KNN:
     # --------------------------
     # 3) Recommend function
     # --------------------------
-    def recommend(self, user_id, method="mf", k=10, global_wr):
+    def recommend(self, user_id, method, k, global_wr):
         if user_id not in self.uid_inv:
             # cold-start fallback
             if "global_wr" in globals():
