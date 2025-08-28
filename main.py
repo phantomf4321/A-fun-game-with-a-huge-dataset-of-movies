@@ -363,11 +363,11 @@ alpha_star = 0.6
 point_df = evaluate_models_at_k(models, K_list=(10,20), alpha_for_hybrid=alpha_star, cf_for_hybrid="mf")
 boot_df, ci_df = bootstrap_eval(models, K_list=(10,20), B=200, alpha_for_hybrid=alpha_star, cf_for_hybrid="mf")
 
-print("\nPoint estimates (no CI):")
+"""print("\nPoint estimates (no CI):")
 print(point_df.sort_values(["K","model"]))
 
 print("\nBootstrap 95% CI summary:")
-print(ci_df.sort_values(["K","model"]))
+print(ci_df.sort_values(["K","model"]))"""
 
 # ---------------------------
 # 7) Visualization (tables & plots)
@@ -394,10 +394,10 @@ def plot_metric_with_ci(ci_df, metric, Ks=(10,20)):
     filename = "src/" + metric + ".png"
     plt.savefig(filename)
 
-# Example plots:
+"""# Example plots:
 plot_metric_with_ci(ci_df, "precision", Ks=(10,20))
 plot_metric_with_ci(ci_df, "recall", Ks=(10,20))
-plot_metric_with_ci(ci_df, "ndcg", Ks=(10,20))
+plot_metric_with_ci(ci_df, "ndcg", Ks=(10,20))"""
 
 
 
