@@ -104,3 +104,5 @@ class Baseline():
         per_genre_wr.to_csv("data/baseline/baseline_per_genre_wr.csv", index=False)
 
         print("Baseline's results are saved successfully!")
+
+        return res
