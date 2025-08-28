@@ -45,13 +45,16 @@ print(knn.recommend(user_id, "userknn", 10, global_wr))
 ratings_small = r_full[["userId", "tmdbId", "rating", "timestamp"]].copy()
 ratings_small["userId"] = ratings_small["userId"].astype(int)
 ratings_small["tmdbId"] = ratings_small["tmdbId"].astype(int)
+item_vectors = recom.get_item_vectors()
+iid_map = knn.get_iid_map()
+uid_inv = knn.get_uid_inv()
+R = knn.get_R()
 
-hybrid = Hybrid()
-def __init__(self, R, r_full, item_vectors, iid_map, uid_inv, global_wr):
+hybrid = Hybrid(R, r_full, item_vectors, iid_map, uid_inv, global_wr)
 
 # Tune alpha parameter
 try:
-    best_alpha = tune_alpha(
+    best_alpha = hybrid.tune_alpha(
         ratings_small,
         cf_method="mf",
         K=10,
@@ -64,7 +67,7 @@ except Exception as e:
 # Generate recommendations for a user
 print(f"\nTop-10 Hybrid (MF+CB) recommendations for user {user_id}:")
 try:
-    recommendations = recommend_hybrid(user_id, alpha=best_alpha, cf_method="mf", k=10)
+    recommendations = hybrid.recommend_hybrid(user_id, alpha=best_alpha, cf_method="mf", k=10)
     print(recommendations)
 except Exception as e:
     print(f"Error generating recommendations: {e}")"

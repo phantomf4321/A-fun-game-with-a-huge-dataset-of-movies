@@ -151,6 +151,8 @@ class Recommendator:
         print("Recommendator is constructed")
         self.meta_subset = meta_subset
 
+    def get_item_vectors(self):
+        return self.item_vectors
     def setup(self):
         # --- Text features (overview + tagline) ---
         self.meta_subset["overview"] = self.meta_subset["overview"].fillna("")
@@ -291,6 +293,14 @@ class KNN:
 
         # mean ratings per user (for Pearson)
         self.user_means = np.array(self.R.sum(axis=1)).ravel() / (self.R != 0).sum(axis=1).A1
+
+    def get_R(self):
+        return self.R
+    def get_iid_map(self):
+        return self.iid_map
+
+    def get_uid_inv(self):
+        return self.uid_inv
 
     def item_item_knn(self, user_idx, k=50):
         """Score all items for a given user with item–item cosine."""
