@@ -345,7 +345,7 @@ class KNN:
     # --------------------------
     # 2) Matrix Factorization (Biased SVD via SGD)
     # --------------------------
-    def train_mf(self, n_factors=50, n_epochs=20, lr=0.005, reg=0.02, seed=42):
+    def train_mf(self, n_factors, n_epochs, lr, reg, seed):
         rng = np.random.default_rng(seed)
         n_users, n_items = self.R.shape
         # latent factors
@@ -371,7 +371,7 @@ class KNN:
 
     def mf_scores(self, user_idx):
         """ Predict scores for all items for given user."""
-        mu, bu, bi, P, Q = self.train_mf(self.R, n_factors=50, n_epochs=15, lr=0.01, reg=0.05)
+        mu, bu, bi, P, Q = self.train_mf(self.R, 20, 0.005, 0.02, 42)
         scores = mu + bu[user_idx] + bi + P[user_idx, :] @ Q.T
         seen = self.R[user_idx, :].nonzero()[1]
         scores[seen] = -np.inf
