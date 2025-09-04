@@ -9,7 +9,7 @@ from collections import defaultdict
 
 from ExploratoryDataAnalysis import EDA
 from models.baseline import Baseline
-from app.functions import Recommendator, KNN, Hybrid
+from app.functions import Recommendator, KNN, Hybrid, RecommenderEvaluator
 
 
 eda = EDA()
@@ -41,6 +41,9 @@ print(knn.recommend(user_id, "itemknn", 10, global_wr))
 
 print("\nTop-10 User–User recommendations:")
 print(knn.recommend(user_id, "userknn", 10, global_wr))
+
+eval = RecommenderEvaluator(knn, baseline, r_full)
+print(eval.evaluate_user(123))
 
 
 

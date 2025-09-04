@@ -10,6 +10,7 @@ from sklearn.preprocessing import MultiLabelBinarizer
 from sklearn.decomposition import TruncatedSVD
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import precision_score, recall_score, ndcg_score
 from scipy.sparse import hstack, csr_matrix
 from typing import Dict, List, Set, Optional, Tuple
 class General_Operations:
@@ -449,11 +450,8 @@ class RecommenderEvaluator:
         self.test_ratings = test_ratings
         self.results = {}
 
-    def prepare_test_data(self, test_size=0.2, random_state=42):
-        """
-        test and trian
-        """
-
+        test_size = 0.2
+        random_state = 42
         train_data, test_data = train_test_split(
             self.test_ratings,
             test_size=test_size,
@@ -464,12 +462,6 @@ class RecommenderEvaluator:
         self.train_data = train_data
         self.test_data = test_data
 
-        return train_data, test_data
-
-    def create_ground_truth(self):
-        """
-         ground truth
-        """
         ground_truth = {}
         for user_id in self.test_data['userId'].unique():
             user_ratings = self.test_data[self.test_data['userId'] == user_id]
@@ -479,7 +471,6 @@ class RecommenderEvaluator:
                 ground_truth[user_id] = liked_movies
 
         self.ground_truth = ground_truth
-        return ground_truth
 
     def generate_recommendations(self, model, user_id, k=10):
         """
