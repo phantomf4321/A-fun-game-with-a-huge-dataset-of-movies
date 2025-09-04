@@ -310,6 +310,7 @@ class KNN:
         return self.titles
 
     def item_item_knn(self, user_idx, k=50):
+        print("item_item_knn is called!")
         """Score all items for a given user with item–item cosine."""
         user_row = self.R[user_idx, :]
         seen_items = user_row.nonzero()[1]
@@ -330,6 +331,7 @@ class KNN:
         return scores
 
     def user_user_knn(self, user_idx, k=50):
+        print("user_user_knn is called!")
         """Score items for a given user with user–user Pearson similarity."""
         # convert to dense array (safe if dataset <10k users/items; otherwise we can optimize)
         R_dense = self.R.toarray().astype(float)
@@ -427,15 +429,8 @@ class KNN:
         # Precompute tmdb_ids and titles efficiently
         tmdb_ids = [self.iid_map[i] for i in sorted_top_idx]
 
-        # Optimize title lookup - check for TITLE_BY_ID once
-        if 'TITLE_BY_ID' in globals():
-            titles = [TITLE_BY_ID.get(int(t), str(t)) for t in tmdb_ids]
-        else:
-            titles = [str(t) for t in tmdb_ids]
-
         return pd.DataFrame({
             "tmdbId": tmdb_ids,
-            "title": titles,
             "score": scores[sorted_top_idx]
         })
 

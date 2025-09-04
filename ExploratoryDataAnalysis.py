@@ -195,7 +195,7 @@ class EDA:
         plot.save_simple_plot(self.monthly, "n_ratings", "Month", "Number of ratings", "Ratings Volume Over Time (Monthly)","Ratings_Volume_Over_Time(Monthly)")
         plot.save_simple_plot(self.monthly, "avg_rating", "Month", "Average of ratings","Ratings Average Over Time (Monthly)", "Ratings_Average_Over_Time(Monthly)")
         plot.save_bar(self.genre_counts, "# Movies", "Genre", "Top Genres by # Movies", "Top_Genres_by_Movies")
-        plot.save_bar(self.genre_counts, "# Movies", "Language", "Top Languages by # Movies", "Top_Languages_by_Movies")
+        plot.save_bar(self.lang_counts, "# Movies", "Language", "Top Languages by # Movies", "Top_Languages_by_Movies")
         print("===== Save plots is ended! =====")
 
     def get_r_full(self):

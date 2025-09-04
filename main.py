@@ -14,6 +14,9 @@ from app.functions import Recommendator, KNN, Hybrid, RecommenderEvaluator
 
 eda = EDA()
 r_full = eda.get_r_full()
+
+print(r_full.head())
+
 baseline = Baseline(r_full)
 baseline_res = baseline.final_results()
 global_wr = baseline_res["global_wr"]
