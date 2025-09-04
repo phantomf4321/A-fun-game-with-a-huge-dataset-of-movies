@@ -400,6 +400,7 @@ plot_metric_with_ci(ci_df, "recall", Ks=(10,20))
 plot_metric_with_ci(ci_df, "ndcg", Ks=(10,20))"""
 
 
+"""
 
 # app.py
 import os
@@ -438,7 +439,6 @@ PLACEHOLDER_URL = "https://via.placeholder.com/180x270?text=No+Image"
 # -------------------------
 @lru_cache(maxsize=1)
 def load_item_vectors():
-    """Load item vectors as numpy array and index list. Accept .npz or joblib."""
     if os.path.exists(ITEM_VECTORS_PATH):
         ext = os.path.splitext(ITEM_VECTORS_PATH)[1].lower()
         if ext == ".npz":
@@ -539,11 +539,6 @@ n_items = ITEM_VECTORS.shape[0]
 
 # Basic CB scoring from Task 3: build user profile (rating-weighted average)
 def build_profile_from_history(rated_tmdb: List[int], ratings: List[float]) -> Optional[np.ndarray]:
-    """
-    rated_tmdb: list of tmdbIds the user has rated
-    ratings: list of corresponding numeric ratings
-    Returns: profile vector (d,)
-    """
     # align to item vectors we have
     rows = []
     ws = []
@@ -563,17 +558,13 @@ def build_profile_from_history(rated_tmdb: List[int], ratings: List[float]) -> O
     return profile
 
 def cb_score_from_profile(profile: np.ndarray) -> np.ndarray:
-    """Return vector length n_items of cosine similarities (not masked)."""
     if profile is None:
         return np.full(n_items, -np.inf)
     sims = cosine_similarity(profile.reshape(1, -1), ITEM_VECTORS).ravel()
     return sims
 
 def mf_score_for_user_raw(user_idx: int) -> Optional[np.ndarray]:
-    """
-    If you saved MF parameters, compute predicted score for all items: mu + bu[u] + bi + p_u @ Q.T
-    user_idx should index into P (0..n_users-1)
-    """
+
     if MF_PARAMS is None:
         return None
     mu, bu, bi, P, Q = MF_PARAMS
@@ -605,7 +596,6 @@ def make_explanation(tmdb_id:int, user_history_tmdb:List[int], user_history_rati
     return " and ".join(parts) if parts else "matches your taste profile"
 
 def blend_scores(s_cf:np.ndarray, s_cb:np.ndarray, alpha:float):
-    """Safely normalize (min-max) each score vector, handle -inf, then blend."""
     def normalize(v):
         v = v.copy().astype(float)
         finite = np.isfinite(v)
@@ -644,11 +634,7 @@ def recommend(
     alpha: float = 0.6,
     top_k: int = 10
 ):
-    """
-    user_id_input: string of form "user:123" or can be left blank
-    picked_title: title string (optional) — if provided will be used for seed (cold-start)
-    mode: "CF (MF)", "CB", or "Hybrid (MF+CB)"
-    """
+
     # Build minimal user profile from input:
     # For deployment we assume you will precompute and store per-user histories,
     # but here we accept a short manual seed:
@@ -785,7 +771,6 @@ if __name__ == "__main__":
 
 
 
-"""
 
 
 
