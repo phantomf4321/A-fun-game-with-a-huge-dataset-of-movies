@@ -32,6 +32,10 @@ for _, row in recommendations.iterrows():
     print(f"{row['title']}  —  {expl}")
 
 knn = KNN(r_full)
+
+print('Sparse Matrix ')
+print(knn.get_R())
+
 global_wr = baseline_res["global_wr"]
 print("\nTop-10 MF recommendations:")
 print(knn.recommend(user_id, "mf", 10, global_wr))
