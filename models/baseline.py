@@ -77,7 +77,7 @@ class Baseline():
 
         # Apply WR within each genre
         per_genre_wr = per_genre_df.groupby("genre", group_keys=False).apply(
-            lambda group: self.genre_wr(group, Cg)
+            lambda group: self.genre_wr(group, Cg), include_groups=False
         )
 
         return per_genre_wr

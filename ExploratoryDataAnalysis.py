@@ -16,13 +16,13 @@ class EDA:
         print("========== EDA.py is ended ==========")
 
     def load_dataset(self):
-        meta = Datasets("data/movies_metadata100.csv")
+        meta = Datasets("data/movies_metadata.csv")
         self.metadata_df = meta.get_dataframe()
 
-        ratings = Datasets("data/ratings_small1000.csv")
+        ratings = Datasets("data/ratings_small.csv")
         self.ratings_df = ratings.get_dataframe()
 
-        links = Datasets("data/links100.csv")
+        links = Datasets("data/links.csv")
         self.links_df = links.get_dataframe()
 
         # Load with low_memory=False to avoid dtype guessing issues
@@ -106,8 +106,8 @@ class EDA:
 
         # Heatmap of a manageable submatrix:
         # take top-N users & movies by activity to keep the plot readable
-        self.TOP_USERS = 200
-        self.TOP_MOVIES = 200
+        self.TOP_USERS = 50
+        self.TOP_MOVIES = 50
 
         self.top_users = self.user_cnt.sort_values("n_ratings", ascending=False).head(self.TOP_USERS)["userId"]
         self.top_movies = self.movie_cnt.sort_values("n_ratings", ascending=False).head(self.TOP_MOVIES)["movieId"]
