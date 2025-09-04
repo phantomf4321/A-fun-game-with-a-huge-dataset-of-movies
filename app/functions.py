@@ -9,6 +9,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import MultiLabelBinarizer
 from sklearn.decomposition import TruncatedSVD
 from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.model_selection import train_test_split
 from scipy.sparse import hstack, csr_matrix
 from typing import Dict, List, Set, Optional, Tuple
 class General_Operations:
@@ -438,6 +439,90 @@ class KNN:
         })
 
 
+class RecommenderEvaluator:
+    def __init__(self, knn_model, baseline_model, test_ratings):
+        """
+        Evaluator for comparing KNN recommender with baseline
+        """
+        self.knn_model = knn_model
+        self.baseline_model = baseline_model
+        self.test_ratings = test_ratings
+        self.results = {}
+
+    def prepare_test_data(self, test_size=0.2, random_state=42):
+        """
+        test and trian
+        """
+
+        train_data, test_data = train_test_split(
+            self.test_ratings,
+            test_size=test_size,
+            random_state=random_state,
+            stratify=self.test_ratings['userId']
+        )
+
+        self.train_data = train_data
+        self.test_data = test_data
+
+        return train_data, test_data
+
+    def create_ground_truth(self):
+        """
+         ground truth
+        """
+        ground_truth = {}
+        for user_id in self.test_data['userId'].unique():
+            user_ratings = self.test_data[self.test_data['userId'] == user_id]
+            # فیلم‌هایی با رتبه بالا (≥4) را به عنوان ground truth در نظر می‌گیریم
+            liked_movies = user_ratings[user_ratings['rating'] >= 4]['tmdbId'].tolist()
+            if liked_movies:
+                ground_truth[user_id] = liked_movies
+
+        self.ground_truth = ground_truth
+        return ground_truth
+
+    def generate_recommendations(self, model, user_id, k=10):
+        """
+        Recomendation for specific user
+        """
+        if hasattr(model, 'recommend'):
+            #  KNN
+            recommendations = model.recommend(user_id, method="itemknn", k=k, global_wr=None)
+            return recommendations['tmdbId'].tolist()
+        elif hasattr(model, 'get_top_recommendations'):
+            # baseline
+            return model.get_top_recommendations(user_id, k=k)
+        else:
+            raise ValueError("Model doesn't have recommendation method")
+
+    def evaluate_user(self, user_id, k=10):
+        """
+        evaluate for specific user
+        """
+        if user_id not in self.ground_truth:
+            return None
+
+        # genarate recom
+        knn_recs = self.generate_recommendations(self.knn_model, user_id, k)
+        baseline_recs = self.generate_recommendations(self.baseline_model, user_id, k)
+
+        true_items = set(self.ground_truth[user_id])
+
+        # KNN
+        knn_hits = set(knn_recs) & true_items
+        knn_precision = len(knn_hits) / k if k > 0 else 0
+        knn_recall = len(knn_hits) / len(true_items) if true_items else 0
+
+        # Baseline
+        baseline_hits = set(baseline_recs) & true_items
+        baseline_precision = len(baseline_hits) / k if k > 0 else 0
+        baseline_recall = len(baseline_hits) / len(true_items) if true_items else 0
+
+        return {
+            'user_id': user_id,
+            'knn': {'precision': knn_precision, 'recall': knn_recall, 'hits': list(knn_hits)},
+            'baseline': {'precision': baseline_precision, 'recall': baseline_recall, 'hits': list(baseline_hits)}
+        }
 class Hybrid:
     def __init__(self, R, r_full, item_vectors, iid_map, uid_inv, global_wr, title_by_id):
         self.R = R
