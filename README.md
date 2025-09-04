@@ -23,6 +23,9 @@ A-fun-game-with-a-huge-dataset-of-movies/
 │
 ├── models/
 │   └── baseline_model.py
+|
+├── report/
+│   └── Final Project.ppt
 │
 ├── src/
 │   └── Plots were saved in this directory!
