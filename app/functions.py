@@ -416,6 +416,7 @@ class KNN:
         self.titles = [TITLE_BY_ID[int(t)] if "TITLE_BY_ID" in globals() else str(t) for t in tmdb_ids]
         return pd.DataFrame({"tmdbId": tmdb_ids, "title": self.titles, "score": scores[top_idx]})
 
+
 class Hybrid:
     def __init__(self, R, r_full, item_vectors, iid_map, uid_inv, global_wr, title_by_id):
         self.R = R
