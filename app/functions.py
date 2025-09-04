@@ -396,13 +396,15 @@ class KNN:
     # 3) Recommend function
     # --------------------------
     def recommend(self, user_id, method, k, global_wr):
+        # Cold-start fallback - optimized condition check
         if user_id not in self.uid_inv:
-            # cold-start fallback
-            if "global_wr" in globals():
+            if global_wr is not None:  # Direct parameter check instead of globals()
                 return global_wr.head(k)[["tmdbId", "title", "WR"]].rename(columns={"WR": "score"})
             return pd.DataFrame(columns=["tmdbId", "title", "score"])
 
         user_idx = self.uid_inv[user_id]
+
+        # Method dispatch - precompute if possible
         if method == "itemknn":
             scores = self.item_item_knn(user_idx)
         elif method == "userknn":
@@ -410,11 +412,30 @@ class KNN:
         else:
             scores = self.mf_scores(user_idx)
 
-        top_idx = np.argpartition(-scores, k)[:k]
-        top_idx = top_idx[np.argsort(-scores[top_idx])]
-        tmdb_ids = [self.iid_map[i] for i in top_idx]
-        self.titles = [TITLE_BY_ID[int(t)] if "TITLE_BY_ID" in globals() else str(t) for t in tmdb_ids]
-        return pd.DataFrame({"tmdbId": tmdb_ids, "title": self.titles, "score": scores[top_idx]})
+        # Optimized top-k selection using np.argpartition
+        if k < len(scores):
+            # Get indices of top k scores without full sort
+            top_idx = np.argpartition(-scores, k)[:k]
+            # Sort only the top k elements
+            sorted_top_idx = top_idx[np.argsort(-scores[top_idx])]
+        else:
+            # If k is large, just sort everything
+            sorted_top_idx = np.argsort(-scores)[:k]
+
+        # Precompute tmdb_ids and titles efficiently
+        tmdb_ids = [self.iid_map[i] for i in sorted_top_idx]
+
+        # Optimize title lookup - check for TITLE_BY_ID once
+        if 'TITLE_BY_ID' in globals():
+            titles = [TITLE_BY_ID.get(int(t), str(t)) for t in tmdb_ids]
+        else:
+            titles = [str(t) for t in tmdb_ids]
+
+        return pd.DataFrame({
+            "tmdbId": tmdb_ids,
+            "title": titles,
+            "score": scores[sorted_top_idx]
+        })
 
 
 class Hybrid:
