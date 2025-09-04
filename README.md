@@ -27,6 +27,7 @@ A-fun-game-with-a-huge-dataset-of-movies/
 ├── src/
 │   └── Plots were saved in this directory!
 │
+├── ExploratoryDataAnalysis.py
 ├── requirements.txt
 ├── README.md
 ├── main.py
