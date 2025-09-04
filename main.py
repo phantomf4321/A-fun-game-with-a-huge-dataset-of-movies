@@ -396,11 +396,11 @@ def plot_metric_with_ci(ci_df, metric, Ks=(10,20)):
 
 plot_metric_with_ci(ci_df, "precision", Ks=(10,20))
 plot_metric_with_ci(ci_df, "recall", Ks=(10,20))
-plot_metric_with_ci(ci_df, "ndcg", Ks=(10,20))"""
+plot_metric_with_ci(ci_df, "ndcg", Ks=(10,20))
+
 
 
 """
-
 # app.py
 import os
 import math

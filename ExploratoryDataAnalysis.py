@@ -16,13 +16,13 @@ class EDA:
         print("========== EDA.py is ended ==========")
 
     def load_dataset(self):
-        meta = Datasets("data/movies_metadata.csv")
+        meta = Datasets("data/movies_metadata100.csv")
         self.metadata_df = meta.get_dataframe()
 
-        ratings = Datasets("data/ratings_small.csv")
+        ratings = Datasets("data/ratings_small1000.csv")
         self.ratings_df = ratings.get_dataframe()
 
-        links = Datasets("data/links.csv")
+        links = Datasets("data/links100.csv")
         self.links_df = links.get_dataframe()
 
         # Load with low_memory=False to avoid dtype guessing issues
