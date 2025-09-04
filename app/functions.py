@@ -476,16 +476,22 @@ class RecommenderEvaluator:
         """
         Recomendation for specific user
         """
-        if hasattr(model, 'recommend'):
-            #  KNN
-            recommendations = model.recommend(user_id, method="itemknn", k=k, global_wr=None)
-            return recommendations['tmdbId'].tolist()
-        elif hasattr(model, 'get_top_recommendations'):
-            # baseline
-            return model.get_top_recommendations(user_id, k=k)
-        else:
-            raise ValueError("Model doesn't have recommendation method")
-
+        try:
+            if hasattr(model, 'recommend'):
+                # برای مدل KNN
+                recommendations = model.recommend(user_id, method="itemknn", k=k, global_wr=None)
+                return recommendations['tmdbId'].tolist()
+            elif hasattr(model, 'head'):  # اگر baseline یک DataFrame باشد
+                return model.head(k)['tmdbId'].tolist()
+            elif hasattr(model, 'get_top_recommendations'):
+                # برای مدل baseline
+                return model.get_top_recommendations(user_id, k=k)
+            else:
+                # فرض می‌کنیم model یک DataFrame است
+                return model.head(k)['tmdbId'].tolist()
+        except Exception as e:
+            print(f"Error generating recommendations for user {user_id}: {e}")
+            return []
     def evaluate_user(self, user_id, k=10):
         """
         evaluate for specific user
